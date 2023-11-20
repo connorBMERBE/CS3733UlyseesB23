@@ -1,1 +1,1 @@
-let's fucking go!
+Let's get it Tech!
