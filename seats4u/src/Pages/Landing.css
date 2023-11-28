@@ -134,7 +134,9 @@ body {
     transform: rotate(315deg);
 }
 
-
+.loginTrigger {
+    cursor: pointer;
+}
 .wrapper {
     display: flex;
     justify-content: center;

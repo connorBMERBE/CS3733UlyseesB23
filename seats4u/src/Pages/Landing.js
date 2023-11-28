@@ -1,10 +1,13 @@
 import './Landing.css';
 import React from 'react';
+import {login} from '../Controller/Controller.js';
 
 export const Landing = () => {
 
     const [searchBarActive, setSearchBarActive] = React.useState(false);
     const [loginPopupVisible, setLoginPopupVisible] = React.useState(false);
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
 
     const toggleSearchBar = () => {
         setSearchBarActive(!searchBarActive);
@@ -23,12 +26,17 @@ export const Landing = () => {
         setLoginPopupVisible(false);
     }
 
+    const handleLogin = (e) => {
+        e.preventDefault();
+        login(username, password);
+    }
+
     return (
     <main>
         <body className = "landingBody">
             <div className = "navBar">
-                <p onClick={showLoginPopup}>Admin Login</p>
-                <p onClick={showLoginPopup}>Venue Manager Login</p>
+                <p className = "loginTrigger" onClick={showLoginPopup}>Admin Login</p>
+                <p className = "loginTrigger" onClick={showLoginPopup}>Venue Manager Login</p>
                 <p className = "no-hover"> Seats4You </p>
             </div>
 
@@ -44,12 +52,12 @@ export const Landing = () => {
                 <div className = "loginWrapper">
                     <span className = "closeIcon" onClick={hideLoginPopup}>&#10006;</span>
                     <h2> Login </h2>
-                    <form action = "#">
+                    <form onSubmit={handleLogin}>
                         <div className = "inputBox">
-                            <input type="text" placeholder = "Username" required/>
+                            <input type="text" placeholder = "Username" onChange={(e) => setUsername(e.target.value)} required/>
                         </div>
                         <div className = "inputBox">
-                            <input type="password" placeholder = "Password" required/>
+                            <input type="password" placeholder = "Password" onChange={(e) => setPassword(e.target.value)} required/>
                         </div>
                         <button type="submit" className="loginButton"> Login </button>
                     </form>
