@@ -6,6 +6,41 @@ import FailedLogin from './Pages/FailedLogin.js';
 import PrivateRoutesVM from './Controller/PrivateRoutesVM.js';
 
 function App() {
+
+  function parseJwt(token) {
+    // Step 1: Extract Payload
+    const base64Url = token.split('.')[1];
+  
+    // Step 2: Base64 Decoding
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = atob(base64);
+  
+    // Step 3: JSON Parsing
+    return JSON.parse(jsonPayload);
+  }
+
+  function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+
+    window.location.href = "/";
+  }
+
+  function checkExpiration() {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      const decodedToken = parseJwt(token);
+
+      if (decodedToken.exp * 1000 <= Date.now()) {
+        logout();
+      }
+    }
+  }
+
+  // Periodically check the token expiration (e.g., every 5 minutes)
+  setInterval(checkExpiration, 20 * 60 * 1000);
+
   return (
     <div>
       <Routes>
