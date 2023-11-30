@@ -4,6 +4,7 @@ import Landing from './Pages/Landing.js';
 import Test from './Pages/Test.js';
 import FailedLogin from './Pages/FailedLogin.js';
 import PrivateRoutesVM from './Controller/PrivateRoutesVM.js';
+import CreateShow from './Pages/createShow.js';
 
 function App() {
 
@@ -49,6 +50,7 @@ function App() {
           <Route path = "/test" element = {<Test/>} exact/>
         </Route>
           <Route path = "/failedLogin" element = {<FailedLogin/>}/>
+          <Route path = "/createShow" element = {<CreateShow/>}/>
       </Routes>
     </div>
   );
