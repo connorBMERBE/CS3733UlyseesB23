@@ -1,0 +1,39 @@
+.venueContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.listVenueLabel {
+    font-size: 3em;
+    margin: 10px;
+}
+
+.verticalMenu {
+    width: 500px;
+    height: 350px;
+    overflow-y: auto;
+    text-align: center;
+    font-size: 3em;
+}
+
+.verticalMenu span {
+    background-color: white;
+    color: black;
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+}
+
+.verticalMenu span:hover {
+    background-color: #3E3F53;
+    color: white;
+}
+
+.verticalMenu span.active {
+    background-color: #04AA6D;
+    color: white;
+  }

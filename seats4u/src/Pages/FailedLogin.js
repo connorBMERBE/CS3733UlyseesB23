@@ -1,7 +1,7 @@
 export const FailedLogin = () => {
     return (
         <main>
-            <h1>Failed Login</h1>
+            <h1>Failed Login/Invalid Credentials</h1>
         </main>
     );
 }
