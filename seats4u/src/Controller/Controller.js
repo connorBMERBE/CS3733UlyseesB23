@@ -42,17 +42,8 @@ export async function makeShow(username, showName, date, time, venueName) {
 
 
     }).then(function (response) {
-        console.log(response);
         if (response.data.statusCode === 200) {
-            console.log(response.data.body.token);
-            const userToken = response.data.body.token;
-            const userRole = response.data.body.role;
-
-            //Store the token in local storage.
-            localStorage.setItem('token', userToken);
-            localStorage.setItem('role', userRole);
-
-            console.log("DONE TOKEN ADDED");
+            console.log("SHOW ADDED");
         } else {
             console.log(JSON.stringify({
                 statusCode: response.data.statusCode, 
