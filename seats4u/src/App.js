@@ -39,6 +39,10 @@ function App() {
     }
   }
 
+  function deleteVenueHandler(venue){
+    deleteVenue(venue);
+  }
+
   // Periodically check the token expiration (e.g., every 5 minutes)
   setInterval(checkExpiration, 20 * 60 * 1000);
 
