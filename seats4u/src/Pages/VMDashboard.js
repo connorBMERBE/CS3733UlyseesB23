@@ -1,10 +1,11 @@
 import './VMDashboard.css';
 import React from 'react';
-import { parseJwt, listVenue } from '../Controller/Controller.js';
+import { parseJwt, listVenue, deleteVenue } from '../Controller/Controller.js';
 
 export const VMDashboard = () => {
     const [venue, setVenue] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
+    const [createShowButton, setCreateShowButton] = React.useState(true);
 
     React.useEffect(() => {
         async function listVenueHandler() {
@@ -22,11 +23,32 @@ export const VMDashboard = () => {
         listVenueHandler();
     }, []);
 
+
+    const deleteVenueHandler = async () => {
+        try {
+            const username = parseJwt(localStorage.getItem('token')).userID;
+            await deleteVenue(username);
+            setVenue([]);
+            setCreateShowButton(false);
+
+            setTimeout(() => {
+                // Perform the action you want after the timeout (e.g., redirect)
+                logoutHandler();
+              }, 3000);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const logoutHandler = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
     
         window.location.href = "/";
+    }
+
+    const toCreateVenue = () => {
+        window.location.href = "/vmDashboard/createShow";
     }
 
     return(
@@ -49,8 +71,12 @@ export const VMDashboard = () => {
                         <span>No Venues Present</span>
                         )}
                 </div>
-                <button className="deleteButton"><span>Purge Venue</span></button>
-                <button className="createShowButton"><span>Create Show</span></button>
+                <button className="deleteButton" onClick={deleteVenueHandler}><span>Purge Venue</span></button>
+                {createShowButton && (
+                    <button className="createShowButton" onClick={toCreateVenue}>
+                        <span>Create Show</span>
+                    </button>
+                    )}
             </div>
         </main>
     );

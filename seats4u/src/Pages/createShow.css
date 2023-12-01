@@ -16,3 +16,22 @@ button {
     margin-left: 10px;
     width: 205px;
 }
+
+/* Add these styles to your createShow.css file */
+.success-message,
+.error-message {
+    width: 100%; /* Ensure the message takes up the full width */
+    box-sizing: border-box; /* Include padding and border in the width calculation */
+}
+
+.success-message {
+    color: green;
+    text-align: left;
+    margin-left: 12px;
+}
+  
+.error-message {
+    color: red;
+    text-align: left;
+    margin-left: 12px;
+}

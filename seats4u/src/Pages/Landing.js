@@ -48,6 +48,7 @@ export const Landing = () => {
             response = await adminLogin(username, password);
         } else {
             response = await login(username, password);
+            console.log(response);
         }
 
         if (response === false) {
@@ -56,12 +57,16 @@ export const Landing = () => {
         }
     }
 
+    const toCreateVenue = () => {
+        window.location.href = "/createVenue";
+    }
     return (
     <main>
         <body className = "landingBody">
             <div className = "navBar">
                 <p className = "loginTrigger" onClick={() => showLoginPopup('admin')}>Admin Login</p>
                 <p className = "loginTrigger" onClick={() => showLoginPopup('venue manager')}>Venue Manager Login</p>
+                <p className = "loginTrigger" onClick={toCreateVenue}>Create Venue/Register</p>
                 <p className = "no-hover"> Seats4You </p>
             </div>
 

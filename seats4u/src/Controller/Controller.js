@@ -94,7 +94,6 @@ export async function listVenue(username) {
         
         if (response.data.statusCode === 200) {
             const venue = JSON.parse(response.data.body);
-            console.log(venue);
             return venue;
         } else {
             console.error("Error fetching venues:", {
@@ -117,4 +116,100 @@ export function parseJwt(token) {
     
     // Step 3: JSON Parsing
     return JSON.parse(jsonPayload);
+}
+
+export async function deleteVenue(username) {
+    try {
+        const response = await Axios.post('https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/deleteVenue',{
+            "username" : username,
+        });
+        
+        if (response.data.statusCode === 200) {
+            return response.data.body;
+        } else {
+            console.error("Error fetching venues:", {
+                statusCode: response.data.statusCode,
+                body: response.data.body
+            });
+        }
+    } catch (error) {
+        console.error("Error fetching venues:", error);
+    }
+}
+
+export async function createShow(username, showName, date, time, price) {
+    try {
+        const response = await Axios.post('https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/createShow',{
+            "username" : username,
+            "showName" : showName, 
+            "date": date, 
+            "time" : time, 
+            "price" : price
+        });
+        
+        if (response.data.statusCode === 200) {
+            return response;
+
+        } else {
+            console.error("Error fetching venues:", {
+                statusCode: response.data.statusCode,
+                body: response.data.body
+            });
+        }
+    } catch (error) {
+        console.error("Error fetching venues:", error);
+    }
+}
+
+export async function handleRegister(username, password) {
+    try {
+        const response = await Axios.post('https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/register',{
+            'username': username,
+            'password': password,
+        
+        });
+
+        if (response) {
+            return response;
+        } else {
+            console.log(JSON.stringify({
+                statusCode: response.data.statusCode, 
+                body: response.data.body}));
+        }
+    } catch (error) {
+        console.log('User already exists ', JSON.stringify({
+            statusCode: 400, 
+            body: "User already exists"}));
+    }
+}
+
+// Define handlecreateVenue with necessary parameters
+export async function handlecreateVenue(venueName, totalSeats, username, password) {
+    try {
+        // Assuming handleRegister needs a username and password
+        const registrationSuccess = await handleRegister(username, password);
+                
+        if (registrationSuccess && registrationSuccess) {
+            console.log('User registered successfully. Proceeding to create venue.');
+            const response = await Axios.post('https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/createVenue', {
+            "venueName": venueName,
+            "totalSeats": totalSeats,
+            "username" : username
+            });
+
+            if (response.data.statusCode === 200) {
+                console.log("VENUE ADDED");
+            } else {
+                console.log(JSON.stringify({
+                    statusCode: response.data.statusCode, 
+                    body: response.data.body
+                }));
+            }
+        } else {
+            console.log('User registration failed. Venue creation aborted.');
+        }
+        } 
+        catch (error) {
+            console.error('Authentication Error: ', error);
+        }
 }

@@ -152,7 +152,6 @@ body {
     border: 2px solid black;
     border-radius: 20px;
     backdrop-filter: blur(30px);
-    text-align: left;
     display: flex; /* Added display flex to center child elements */
     flex-direction: column; /* Stack child elements vertically */
     justify-content: center; /* Center child elements vertically */
@@ -197,6 +196,7 @@ body {
     font-size: 1em;
     color: white;
     font-weight: 500;
+    margin: 0 auto;
 }
 
 .closeIcon {

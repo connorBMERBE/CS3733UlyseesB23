@@ -7,6 +7,7 @@ import AdminPage from './Pages/adminPage.js';
 import VMDashboard from './Pages/VMDashboard.js';
 import PrivateRoutesVM from './Controller/PrivateRoutesVM.js';
 import CreateShow from './Pages/createShow.js';
+import CreateVenue from './Pages/CreateVenue.js';
 import PrivateRoutesAdmin from './Controller/PrivateRoutesAdmin.js';
 
 function App() {
@@ -42,10 +43,6 @@ function App() {
     }
   }
 
-  function deleteVenueHandler(venue){
-    deleteVenue(venue);
-  }
-
   // Periodically check the token expiration (e.g., every 5 minutes)
   setInterval(checkExpiration, 20 * 60 * 1000);
 
@@ -56,14 +53,14 @@ function App() {
         <Route element = {<PrivateRoutesVM/>}>
           <Route path = "/test" element = {<Test/>} exact/>
           <Route path = "/vmDashboard" element = {<VMDashboard/>}/>
+          <Route path = "/vmDashboard/createShow" element = {<CreateShow/>}/>
         </Route>
 
         <Route element = {<PrivateRoutesAdmin/>}>
           <Route path = "/adminPage" element = {<AdminPage/>}/>
         </Route>
-
+          <Route path = "/createVenue" element = {<CreateVenue/>}/>
           <Route path = "/failedLogin" element = {<FailedLogin/>}/>
-          <Route path = "/createShow" element = {<CreateShow/>}/>
       </Routes>
     </div>
   );
