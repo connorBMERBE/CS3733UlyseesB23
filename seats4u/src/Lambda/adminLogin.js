@@ -18,7 +18,7 @@ exports.handler = async (event) => {
     const password = event.password;
 
     try {
-        const rows = await queryDatabase('VenueManager', username);
+        const rows = await queryDatabase('Administrator', username);
         let role = 'venue manager';
 
         if (rows.length > 0) {

@@ -3,7 +3,10 @@ import { Routes, Route } from 'react-router-dom';
 import Landing from './Pages/Landing.js';
 import Test from './Pages/Test.js';
 import FailedLogin from './Pages/FailedLogin.js';
+import AdminPage from './Pages/adminPage.js';
+import VMDashboard from './Pages/VMDashboard.js';
 import PrivateRoutesVM from './Controller/PrivateRoutesVM.js';
+import PrivateRoutesAdmin from './Controller/PrivateRoutesAdmin.js';
 
 function App() {
 
@@ -47,7 +50,13 @@ function App() {
         <Route path = "/" element = {<Landing/>}/>
         <Route element = {<PrivateRoutesVM/>}>
           <Route path = "/test" element = {<Test/>} exact/>
+          <Route path = "/vmDashboard" element = {<VMDashboard/>}/>
         </Route>
+
+        <Route element = {<PrivateRoutesAdmin/>}>
+          <Route path = "/adminPage" element = {<AdminPage/>}/>
+        </Route>
+
           <Route path = "/failedLogin" element = {<FailedLogin/>}/>
       </Routes>
     </div>

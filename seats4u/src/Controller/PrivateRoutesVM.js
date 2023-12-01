@@ -7,10 +7,6 @@ const PrivateRoutesVM = () => {
     let role = localStorage.getItem('role');
     let isVenueManager = (role === 'venue manager') ? true : false;
 
-    console.log('Token:', token);
-    console.log('IsAuthenticated:', isAuthenticated);
-    console.log('IsVenueManager', isVenueManager);
-
     return (
         (isAuthenticated && isVenueManager) ? <Outlet/> : <Navigate to="/failedLogin"/>
     )

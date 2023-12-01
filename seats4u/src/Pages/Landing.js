@@ -1,6 +1,6 @@
 import './Landing.css';
 import React from 'react';
-import {login} from '../Controller/Controller.js';
+import {login, adminLogin} from '../Controller/Controller.js';
 
 export const Landing = () => {
 
@@ -8,6 +8,8 @@ export const Landing = () => {
     const [loginPopupVisible, setLoginPopupVisible] = React.useState(false);
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [adminLoginStatus, setAdminLogin] = React.useState(false);
+    const [loginStatus, setLoginStatus] = React.useState('');
 
     const toggleSearchBar = () => {
         setSearchBarActive(!searchBarActive);
@@ -18,25 +20,48 @@ export const Landing = () => {
         search.value = '';
     }
 
-    const showLoginPopup = () => {
+    const showLoginPopup = (loginType) => {
         setLoginPopupVisible(true);
+        if (loginType === 'admin') {
+            setAdminLogin(true);
+        } else {
+            setAdminLogin(false);
+        }
     }
 
     const hideLoginPopup = () => {
         setLoginPopupVisible(false);
+        const usernameInput = document.getElementById('usernameInput');
+        const passwordInput = document.getElementById('passwordInput');
+        usernameInput.value = '';
+        passwordInput.value = '';
+        setLoginStatus('');
     }
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        login(username, password);
+        let response = null;
+        if (localStorage.getItem('token')) {
+            window.location.href = '/failedLogin';
+        }
+        else if (adminLoginStatus) {
+            response = await adminLogin(username, password);
+        } else {
+            response = await login(username, password);
+        }
+
+        if (response === false) {
+            console.log(response);
+            setLoginStatus("Invalid Credentials please try again.")
+        }
     }
 
     return (
     <main>
         <body className = "landingBody">
             <div className = "navBar">
-                <p className = "loginTrigger" onClick={showLoginPopup}>Admin Login</p>
-                <p className = "loginTrigger" onClick={showLoginPopup}>Venue Manager Login</p>
+                <p className = "loginTrigger" onClick={() => showLoginPopup('admin')}>Admin Login</p>
+                <p className = "loginTrigger" onClick={() => showLoginPopup('venue manager')}>Venue Manager Login</p>
                 <p className = "no-hover"> Seats4You </p>
             </div>
 
@@ -54,12 +79,13 @@ export const Landing = () => {
                     <h2> Login </h2>
                     <form onSubmit={handleLogin}>
                         <div className = "inputBox">
-                            <input type="text" placeholder = "Username" onChange={(e) => setUsername(e.target.value)} required/>
+                            <input type="text" id="usernameInput" placeholder = "Username" onChange={(e) => setUsername(e.target.value)} required/>
                         </div>
                         <div className = "inputBox">
-                            <input type="password" placeholder = "Password" onChange={(e) => setPassword(e.target.value)} required/>
+                            <input type="password" id="passwordInput" placeholder = "Password" onChange={(e) => setPassword(e.target.value)} required/>
                         </div>
                         <button type="submit" className="loginButton"> Login </button>
+                        {loginStatus && <p className="error-message" id="errorMessage">{loginStatus}</p>}
                     </form>
                 </div>
             </div>
