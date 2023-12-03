@@ -86,7 +86,7 @@ body {
     width: 300px;
     height: 60px;
     left: 60px;
-    transform: translateY(-14%);
+    transform: translateY(-32%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -223,3 +223,43 @@ body {
     color: red;
     text-align: center;
 }
+
+.showContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.showMenu {
+    position: absolute;
+    top: 300px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 750px;
+    height: 400px;
+    overflow-y: auto;
+    text-align: center;
+    font-size: 2.5em;
+}
+
+.showMenu span {
+    background-color: white;
+    color: black;
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+}
+
+.showMenu span:hover {
+    background-color: #3E3F53;
+    color: white;
+}
+
+.showItem {
+    justify-content: none;
+}
+
+
