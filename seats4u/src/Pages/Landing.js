@@ -1,6 +1,6 @@
 import './Landing.css';
 import React from 'react';
-import {login, adminLogin} from '../Controller/Controller.js';
+import {login, adminLogin, listActiveShows} from '../Controller/Controller.js';
 
 export const Landing = () => {
 
@@ -10,6 +10,9 @@ export const Landing = () => {
     const [password, setPassword] = React.useState('');
     const [adminLoginStatus, setAdminLogin] = React.useState(false);
     const [loginStatus, setLoginStatus] = React.useState('');
+    const [loading, setLoading] = React.useState(true);
+    const [shows, setShows] = React.useState([]);
+    const [searchTerm, setSearchTerm] = React.useState('');
 
     const toggleSearchBar = () => {
         setSearchBarActive(!searchBarActive);
@@ -60,6 +63,39 @@ export const Landing = () => {
     const toCreateVenue = () => {
         window.location.href = "/createVenue";
     }
+
+    React.useEffect(() => {
+        const fetchShows = async() => {
+            try {
+                const showsInfo = await listActiveShows();
+                const parsedShows = JSON.parse(showsInfo);
+                console.log(parsedShows);
+                console.log(Array.isArray(parsedShows));
+                setShows(parsedShows);
+            } 
+            catch (error) {
+                console.error("Error fetching shows:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchShows();
+    }, []);
+
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const filterShows = shows.filter((show) => 
+        show.showName.toLowerCase().includes(searchTerm.toLowerCase())    
+    );
+
+    const parseDate = (dateIn) => {
+        const dateOut = new Date(dateIn).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' });
+
+        return dateOut;
+    }
     return (
     <main>
         <body className = "landingBody">
@@ -73,7 +109,7 @@ export const Landing = () => {
             <div className = {`searchBar ${searchBarActive ? 'active' : ''}`}>
                 <div className = "icon" onClick={toggleSearchBar}/>
                 <div className = "input">
-                    <input type="text" placeholder="Search for Shows" id = "consumerSearch"/>
+                    <input type="text" placeholder="Search for Shows" id = "consumerSearch" onChange={handleSearch}/>
                 </div>
                 <span className = "clear" onClick={clearSearchBar}/>
             </div>
@@ -94,6 +130,27 @@ export const Landing = () => {
                     </form>
                 </div>
             </div>
+
+            <div className="showInformationContainer">
+                <div className = "showContainer" id="venueMenu">
+                    <div className = "showMenu">
+                        {loading ? (
+                            <span>Loading...</span>
+                        ) : filterShows.length > 0 ? (
+                                filterShows.map((show, index) => (
+                                    <div key={index} className="showItem">
+                                        <span className="showDetails">
+                                            {`${show.showName} | ${parseDate(show.Date)} | ${show.Time}`}
+                                        </span>
+                                    </div>
+                                    ))
+                                ) : (
+                                    <span>No Shows Found</span>
+                                )}
+                    </div>
+                </div>
+            </div>
+
         </body>
     </main>);
 }
