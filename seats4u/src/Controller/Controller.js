@@ -235,4 +235,22 @@ export async function listActiveShows() {
 }
 
 
+// Function that handles listing all Created Venues
+export async function activateShows() {
+    try {
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/activateShow");
 
+        if (response.data.statusCode === 200) {
+            console.log("VENUE ADDED");
+            return response.data.body;
+        } else {
+            console.log(JSON.stringify({
+                statusCode: response.data.statusCode, 
+                body: response.data.body
+            }));
+        }
+    }
+        catch (error) {
+            console.error('Listing Shows Error: ', error);
+        }
+}
