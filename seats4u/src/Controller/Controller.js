@@ -234,6 +234,28 @@ export async function listActiveShows() {
         }
 }
 
+//Function that handles retrieving all seats
+export async function listSectionSeats(showID, section) {
+    try {
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/listSectionSeats", {
+            "showID" : showID, 
+            "section" : section,
+        });
+
+        if (response.data.statusCode === 200) {
+            console.log("Seats Returned");
+            return response.data.body;
+
+        } else {
+            console.log(JSON.stringify({
+                statusCode: response.data.statusCode, 
+                body: response.data.body
+            }));
+        }
+    } catch (error) {
+        console.error('Retrieving Seats Error: ', error);
+    }
+}
 
 // Function that handles listing all Created Venues
 export async function activateShows(showID) {
@@ -242,17 +264,62 @@ export async function activateShows(showID) {
             "showID" : showID,
         });
 
+<<<<<<< HEAD
         if (response.data.statusCode === 200) {
             console.log("Show Activated");
             return response.data.body;
+=======
+//Function that handles retrieving all seats
+export async function listAvailableSeats(showID) {
+    try {
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/listAllSeats", {
+            "showID" : showID
+        });
+
+        if (response.data.statusCode === 200) {
+            console.log("Seats Returned");
+            return response.data.body;
+
+>>>>>>> e1f7aa93550604f77e79b929063ad17e482d7931
         } else {
             console.log(JSON.stringify({
                 statusCode: response.data.statusCode, 
                 body: response.data.body
             }));
         }
+<<<<<<< HEAD
     }
         catch (error) {
             console.error('Activate Shows Error: ', error);
         }
 }
+=======
+    } catch (error) {
+        console.error('Retrieving Seats Error: ', error);
+    }
+}
+
+//Function that handles purchasing seats and returning seats if applicable
+export async function purchaseSeats(showID, seats) {
+    try {
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/purchaseSeats", {
+            "showID" : showID, 
+            "seats" : seats
+        });
+
+        if (response.data.statusCode === 200) {
+            return [];
+        } else if (response.data.statusCode === 201) {
+            return response.data.body;
+        } else {
+            console.error(JSON.stringify({
+                statusCode: response.data.statusCode, 
+                body: response.data.body
+            }));
+        }
+    } catch (error) {
+        console.error("Purchase Error: ", error);
+    }
+}
+
+>>>>>>> e1f7aa93550604f77e79b929063ad17e482d7931

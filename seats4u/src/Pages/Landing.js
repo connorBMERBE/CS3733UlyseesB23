@@ -1,6 +1,7 @@
 import './Landing.css';
 import React from 'react';
 import {login, adminLogin, listActiveShows} from '../Controller/Controller.js';
+import { Link } from 'react-router-dom';
 
 export const Landing = () => {
 
@@ -70,7 +71,6 @@ export const Landing = () => {
                 const showsInfo = await listActiveShows();
                 const parsedShows = JSON.parse(showsInfo);
                 console.log(parsedShows);
-                console.log(Array.isArray(parsedShows));
                 setShows(parsedShows);
             } 
             catch (error) {
@@ -131,6 +131,7 @@ export const Landing = () => {
                 </div>
             </div>
 
+<<<<<<< HEAD
 
             <div className="showInformationContainer">
                 <div className = "showContainer" id="venueMenu">
@@ -149,6 +150,23 @@ export const Landing = () => {
                                     <span>No Shows Found</span>
                                 )}
                     </div>
+=======
+            <div className = "showContainer">
+                <div className = "showMenu">
+                    {loading ? (
+                        <span>Loading...</span>
+                    ) : filterShows.length > 0 ? (
+                            filterShows.map((show, index) => (
+                                <Link to={`/show/${show.showID}`} key={index} className="showItem">
+                                    <span className="showDetails">
+                                        {`${show.showName} | ${parseDate(show.Date)} | ${show.Time}`}
+                                    </span>
+                                </Link>
+                                ))
+                            ) : (
+                                <span>No Shows Found</span>
+                            )}
+>>>>>>> e1f7aa93550604f77e79b929063ad17e482d7931
                 </div>
             </div>
             

@@ -29,6 +29,7 @@ body {
     font-size: 36px;
 }
 
+/* Seach Bar CSS */
 .searchBar {
     position: absolute;
     top: 240px;
@@ -134,19 +135,25 @@ body {
     transform: rotate(315deg);
 }
 
+
+/* Login CSS */
 .loginTrigger {
     cursor: pointer;
 }
+
 .wrapper {
     display: flex;
+    position: relative;
     justify-content: center;
     align-items: center;
+    z-index: 100;
     transform: scale(0);
     transition: transform .5s ease;
 }
 
 .loginWrapper {
     width: 400px;
+    position: relative;
     height: 400px;
     background: transparent;
     border: 2px solid black;
@@ -224,8 +231,9 @@ body {
     text-align: center;
 }
 
+
+/* List Shows CSS */
 .showContainer {
-    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
@@ -243,6 +251,7 @@ body {
     overflow-y: auto;
     text-align: center;
     font-size: 2.5em;
+    
 }
 
 .showMenu span {
@@ -260,6 +269,7 @@ body {
 
 .showItem {
     justify-content: none;
+    text-decoration: none;
 }
 
 

@@ -1,0 +1,70 @@
+.venueWrapper {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    flex-direction: column;
+}
+  
+.venue {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+.section {
+    text-align: center;
+}
+
+.seat {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border: 1px solid black;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.seat.selected {
+    background-color: #4caf50;
+    color: #fff;
+    border: 1px solid #4caf50;
+}
+
+.seat.sold {
+    background-color: maroon;
+    color: white;
+    border: 1px solid maroon;
+}
+
+.confirm-purchase {
+    margin-top: 300px; /* Adjust the margin as needed */
+    display: flex;
+    justify-content: center;
+}
+  
+.confirm-purchase button {
+    background-color: green;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    outline: none;
+}
+  
+.confirm-purchase button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+.confirm-purchase button.another-button {
+    background-color: red;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    outline: none;
+}
