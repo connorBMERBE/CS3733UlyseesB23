@@ -9,52 +9,42 @@ const db = mysql.createPool( {
     database: db_access.config.database
 });
 
-const queryActivateShow = (username, show) => {
+const queryActivateShow = (showID) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT vmID FROM Shows WHERE vmIDShowsFK=?', [show],(error, rows) => {
+        console.log("done1");
+        db.query('UPDATE Shows SET isActivated=1 WHERE showID=?', [showID],(error, rows) => {
+            console.log("done2");
             if (error) {
                 reject(error);
             } else {
-                db.query('SELECT checkvmID FROM VenueManager WHERE username=?', [username],(error, rows) => {
-                    if (error){
-                        reject(error);
-                    }else if (vmID === checkvmID){
-                        db.query('UPDATE Shows SET isActivated=1 WHERE showName=?', [show],(error, rows) => {
-                            if (error){
-                                reject(error);
-                            } else {
-                                resolve(rows);
-                            }
-                        })
-                    } else {
-                        return{
-                            statusCode: 400,
-                            body: "Venue does not belong to this Manager"
-                        }
-                    }
-                })
-                
+
+                resolve(rows);
             }
-        })
-    })
-}
+        });
+    });
+};
 
 exports.handler = async (event) => {
     try {
-        const username = event.username;
-        const show = event.show;
-        await queryActivateShow(username, show);
+        const showID = event.showID;
+        const response = await queryActivateShow(showID);
         
-
-        return {
-            statusCode: 200, 
-            body: "Activation Successful"
+        console.log(response);
+        if (response.affectedRows === 1) {
+            return {
+                statusCode: 200, 
+                body: "Activation Successful"
+            };
+        } else {
+            return {
+                statusCode: 400,
+                body: 'Show not found or too many shows found'
+            }
         }
     } catch (error) {
-        console.log(error)
         return {
             statusCode: 500, 
             body: 'Internal Server Error'
-        }
+        };
     }
-}
+};
