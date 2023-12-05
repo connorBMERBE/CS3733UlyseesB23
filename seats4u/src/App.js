@@ -9,6 +9,8 @@ import PrivateRoutesVM from './Controller/PrivateRoutesVM.js';
 import CreateShow from './Pages/createShow.js';
 import CreateVenue from './Pages/CreateVenue.js';
 import PrivateRoutesAdmin from './Controller/PrivateRoutesAdmin.js';
+import ShowDetails from './Pages/showDetails.js';
+import EnjoyShow from './Pages/enjoyShow.js';
 
 function App() {
 
@@ -50,6 +52,8 @@ function App() {
     <div>
       <Routes>
         <Route path = "/" element = {<Landing/>}/>
+        <Route path = "/show/:showID" element = {<ShowDetails/>}/>
+
         <Route element = {<PrivateRoutesVM/>}>
           <Route path = "/test" element = {<Test/>} exact/>
           <Route path = "/vmDashboard" element = {<VMDashboard/>}/>
@@ -61,6 +65,7 @@ function App() {
         </Route>
           <Route path = "/createVenue" element = {<CreateVenue/>}/>
           <Route path = "/failedLogin" element = {<FailedLogin/>}/>
+          <Route path = "/purchased" element = {<EnjoyShow/>}/>
       </Routes>
     </div>
   );
