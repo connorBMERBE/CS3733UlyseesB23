@@ -114,6 +114,24 @@ export const Landing = () => {
                 <span className = "clear" onClick={clearSearchBar}/>
             </div>
 
+            <div className ={`wrapper ${loginPopupVisible ? 'active' : ''}`}>
+                <div className = "loginWrapper">
+                    <span className = "closeIcon" onClick={hideLoginPopup}>&#10006;</span>
+                    <h2> Login </h2>
+                    <form onSubmit={handleLogin}>
+                        <div className = "inputBox">
+                            <input type="text" id="usernameInput" placeholder = "Username" onChange={(e) => setUsername(e.target.value)} required/>
+                        </div>
+                        <div className = "inputBox">
+                            <input type="password" id="passwordInput" placeholder = "Password" onChange={(e) => setPassword(e.target.value)} required/>
+                        </div>
+                        <button type="submit" className="loginButton"> Login </button>
+                        {loginStatus && <p className="error-message" id="errorMessage">{loginStatus}</p>}
+                    </form>
+                </div>
+            </div>
+
+
             <div className="showInformationContainer">
                 <div className = "showContainer" id="venueMenu">
                     <div className = "showMenu">
@@ -133,24 +151,7 @@ export const Landing = () => {
                     </div>
                 </div>
             </div>
-
-            <div className ={`wrapper ${loginPopupVisible ? 'active' : ''}`}>
-                <div className = "loginWrapper">
-                    <span className = "closeIcon" onClick={hideLoginPopup}>&#10006;</span>
-                    <h2> Login </h2>
-                    <form onSubmit={handleLogin}>
-                        <div className = "inputBox">
-                            <input type="text" id="usernameInput" placeholder = "Username" onChange={(e) => setUsername(e.target.value)} required/>
-                        </div>
-                        <div className = "inputBox">
-                            <input type="password" id="passwordInput" placeholder = "Password" onChange={(e) => setPassword(e.target.value)} required/>
-                        </div>
-                        <button type="submit" className="loginButton"> Login </button>
-                        {loginStatus && <p className="error-message" id="errorMessage">{loginStatus}</p>}
-                    </form>
-                </div>
-            </div>
-
+            
         </body>
     </main>);
 }
