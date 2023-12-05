@@ -236,12 +236,14 @@ export async function listActiveShows() {
 
 
 // Function that handles listing all Created Venues
-export async function activateShows() {
+export async function activateShows(showID) {
     try {
-        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/activateShow");
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/activateShow", {
+            "showID" : showID,
+        });
 
         if (response.data.statusCode === 200) {
-            console.log("VENUE ADDED");
+            console.log("Show Activated");
             return response.data.body;
         } else {
             console.log(JSON.stringify({
@@ -251,6 +253,6 @@ export async function activateShows() {
         }
     }
         catch (error) {
-            console.error('Listing Shows Error: ', error);
+            console.error('Activate Shows Error: ', error);
         }
 }
