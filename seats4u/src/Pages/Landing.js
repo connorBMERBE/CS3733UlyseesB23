@@ -131,26 +131,6 @@ export const Landing = () => {
                 </div>
             </div>
 
-<<<<<<< HEAD
-
-            <div className="showInformationContainer">
-                <div className = "showContainer" id="venueMenu">
-                    <div className = "showMenu">
-                        {loading ? (
-                            <span>Loading...</span>
-                        ) : filterShows.length > 0 ? (
-                                filterShows.map((show, index) => (
-                                    <div key={index} className="showItem">
-                                        <span className="showDetails">
-                                            {`${show.showName} | ${parseDate(show.Date)} | ${show.Time}`}
-                                        </span>
-                                    </div>
-                                    ))
-                                ) : (
-                                    <span>No Shows Found</span>
-                                )}
-                    </div>
-=======
             <div className = "showContainer">
                 <div className = "showMenu">
                     {loading ? (
@@ -166,7 +146,6 @@ export const Landing = () => {
                             ) : (
                                 <span>No Shows Found</span>
                             )}
->>>>>>> e1f7aa93550604f77e79b929063ad17e482d7931
                 </div>
             </div>
             

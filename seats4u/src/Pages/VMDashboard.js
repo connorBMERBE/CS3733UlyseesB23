@@ -1,6 +1,6 @@
 import './VMDashboard.css';
 import React from 'react';
-import { parseJwt, listVenue, deleteVenue, activateShows } from '../Controller/Controller.js';
+import { parseJwt, listVenue, deleteVenue } from '../Controller/Controller.js';
 
 export const VMDashboard = () => {
     const [venue, setVenue] = React.useState([]);
@@ -55,7 +55,7 @@ export const VMDashboard = () => {
         try{
             //stub const rn make sure we change this after we have the ability to select a show
             const showID = 23;
-            activateShows(showID);
+            //activateShows(showID);
         }catch (error) {
             console.log(error);
         }

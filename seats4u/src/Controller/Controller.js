@@ -257,18 +257,7 @@ export async function listSectionSeats(showID, section) {
     }
 }
 
-// Function that handles listing all Created Venues
-export async function activateShows(showID) {
-    try {
-        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/activateShow", {
-            "showID" : showID,
-        });
 
-<<<<<<< HEAD
-        if (response.data.statusCode === 200) {
-            console.log("Show Activated");
-            return response.data.body;
-=======
 //Function that handles retrieving all seats
 export async function listAvailableSeats(showID) {
     try {
@@ -280,20 +269,12 @@ export async function listAvailableSeats(showID) {
             console.log("Seats Returned");
             return response.data.body;
 
->>>>>>> e1f7aa93550604f77e79b929063ad17e482d7931
         } else {
             console.log(JSON.stringify({
                 statusCode: response.data.statusCode, 
                 body: response.data.body
             }));
         }
-<<<<<<< HEAD
-    }
-        catch (error) {
-            console.error('Activate Shows Error: ', error);
-        }
-}
-=======
     } catch (error) {
         console.error('Retrieving Seats Error: ', error);
     }
@@ -322,4 +303,3 @@ export async function purchaseSeats(showID, seats) {
     }
 }
 
->>>>>>> e1f7aa93550604f77e79b929063ad17e482d7931
