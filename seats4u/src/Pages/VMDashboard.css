@@ -1,3 +1,10 @@
+.welcomeMessage {
+  text-align: center;
+  margin: 0;
+  margin-top: 10px;
+  font-size: 3em;
+}
+
 .dashboardContainer {
     display: flex;
     flex-direction: column;
@@ -5,6 +12,9 @@
     justify-content: center;
     height: 100vh;
     margin: 0;
+    margin-top: -50px;
+    margin-right: 30px;
+    margin-left: 30px;
 }
 
 .VMVenueLabel {
@@ -26,6 +36,8 @@
     display: block;
     padding: 12px;
     text-decoration: none;
+    box-sizing: border-box;
+    cursor: pointer;
 }
 
 .vmDashboardMenu span:hover {
@@ -45,6 +57,7 @@
     width: 300px;
     transition: all 0.5s;
     cursor: pointer;
+    margin-top: 20px;
   }
   
   .deleteButton span {
@@ -112,3 +125,128 @@
     right: 0;
   }
 
+.menuContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.listVenueLabel {
+  font-size: 3em;
+  margin: 10px;
+}
+
+.activateShow {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: yellow;
+  border: none;
+  color: black;
+  text-align: center;
+  font-size: 28px;
+  padding: 20px;
+  width: 300px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.activateShow span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.activateShow span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.activateShow:hover span {
+  padding-right: 25px;
+}
+
+.activateShow:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+.activateShow:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.deleteShow {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: rgb(43, 143, 39);
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 20px;
+  width: 300px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.deleteShow span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.deleteShow span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.deleteShow:hover span {
+  padding-right: 25px;
+}
+
+.deleteShow:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+.deleteShow:disabled {
+  background-color: #bdc3c7;
+  color: black;
+  cursor: not-allowed;
+}
+
+.inactiveContainer {
+  margin-top: -250px;
+  
+}
+
+.inactiveContainer .vmDashboardMenu {
+  height: 150px; /* Set a fixed height or adjust as needed */
+}
+
+.vmDashboardMenu span.selectedShow {
+  background-color: #4CAF50; /* Green color */
+  color: white;
+}
+
+.vmDashboardMenu span.activateShowSpan {
+  background-color: yellow; /* Green color */
+  color: black;
+}
+
+.failure {
+  color: red;
+  margin-bottom: -22px;
+}

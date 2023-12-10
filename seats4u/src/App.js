@@ -63,9 +63,10 @@ function App() {
         <Route element = {<PrivateRoutesAdmin/>}>
           <Route path = "/adminPage" element = {<AdminPage/>}/>
         </Route>
-          <Route path = "/createVenue" element = {<CreateVenue/>}/>
-          <Route path = "/failedLogin" element = {<FailedLogin/>}/>
-          <Route path = "/purchased" element = {<EnjoyShow/>}/>
+
+        <Route path = "/createVenue" element = {<CreateVenue/>}/>
+        <Route path = "/failedLogin" element = {<FailedLogin/>}/>
+        <Route path = "/purchased" element = {<EnjoyShow/>}/>
       </Routes>
     </div>
   );

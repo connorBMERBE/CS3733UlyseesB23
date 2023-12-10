@@ -184,7 +184,7 @@ export async function handleRegister(username, password) {
 }
 
 // Define handlecreateVenue with necessary parameters
-export async function handlecreateVenue(venueName, totalSeats, username, password) {
+export async function handlecreateVenue(venueName, totalSeats, username, password, rowLeft, colLeft, rowCenter, colCenter, rowRight, colRight) {
     try {
         // Assuming handleRegister needs a username and password
         const registrationSuccess = await handleRegister(username, password);
@@ -194,7 +194,13 @@ export async function handlecreateVenue(venueName, totalSeats, username, passwor
             const response = await Axios.post('https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/createVenue', {
             "venueName": venueName,
             "totalSeats": totalSeats,
-            "username" : username
+            "username" : username,
+            "rowLeft" : rowLeft,
+            "colLeft" : colLeft,
+            "rowCenter" : rowCenter,
+            "colCenter" : colCenter,
+            "rowRight" : rowRight,
+            "colRight" : colRight
             });
 
             if (response.data.statusCode === 200) {
@@ -303,3 +309,115 @@ export async function purchaseSeats(showID, seats) {
     }
 }
 
+//listShowsForVenue function
+export async function listShowsForVenue(venueID) {
+    try {
+        const response = await Axios.post('https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/listShowsForVenue', {
+            "venueID" : venueID
+        });
+        
+        if (response.data.statusCode === 200) {
+            const shows = JSON.parse(response.data.body);
+            return shows;
+
+        } else {
+            console.error("Error fetching shows:", {
+                statusCode: response.data.statusCode,
+                body: response.data.body
+            });
+        }
+    } catch (error) {
+        console.error("Error fetching venues:", error);
+        return []; // Return an empty array in case of an error
+    }
+}
+
+
+//Function that handles deletingShows for Admin
+export async function deleteShowAdmin(showID) {
+    try {
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/deleteShowAdmin", {
+            "showID" : showID
+        });
+
+        if (response.data.statusCode === 200) {
+            return response.data.statusCode;
+        } else {
+            return response.data.statusCode;
+        }
+    } catch (error) {
+        console.error("Error Deleting Shows", error);
+    }
+}
+
+
+//Function that handles creating Tickets
+export async function createTickets(showID, section, rows, columns) {
+    try {
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/createTickets", {
+            "showID" : showID, 
+            "section" : section, 
+            "numRows" : rows, 
+            "numColumns" : columns
+        });
+        console.log(response);
+
+        if (response.data.statusCode === 200) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        throw new Error("Could not create tickets: ", error);
+    }
+}
+
+//Function that handles activating a show. 
+export async function activateShow(showID, rowLeft, colLeft, rowCenter, colCenter, rowRight, colRight) {
+    try {
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/activateShow", {
+            "showID" : showID
+        });
+
+        if (response.data.statusCode === 200) {
+            const ticketCreationLeft = await createTickets(showID, "Left", rowLeft, colLeft);
+            //console.log("Ticket Creation Left: ", ticketCreationLeft);
+            const ticketCreationCenter = await createTickets(showID, "Center", rowCenter, colCenter);
+            //console.log("Ticket Creation Center: ", ticketCreationCenter);
+            const ticketCreationRight = await createTickets(showID, "Right", rowRight, colRight);
+            //console.log("Ticket Creation Right: ", ticketCreationRight);
+
+            if (ticketCreationLeft && ticketCreationCenter && ticketCreationRight) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+        console.log("Error: ", error);
+    }
+}
+
+
+//Function Responsible for deletion of shows.
+export async function deleteShowVM(showID) {
+    try {
+        const response = await Axios.post('https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/deleteShowVM',{
+            "showID" : showID
+        });
+
+        if (response.data.statusCode === 200) {
+            return true;
+        } else {
+            console.error("Error fetching shows:", {
+                statusCode: response.data.statusCode,
+                body: response.data.body
+            });
+        }
+    } catch (error) {
+        console.error("Error fetching shows:", error);
+    }
+}
