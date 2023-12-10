@@ -12,11 +12,17 @@ export const CreateVenue = () => {
   const [password, setpassword] = React.useState('');
   const [totalSeats, settotalSeats] = React.useState(0);
 
-  const calculateSeats = (input) => {
+  const calculateSeats = (input, section) => {
     if (!input) return 0; // Handle empty input
     const [rows, columns] = input.split(',').map(Number);
     return rows * columns;
   };
+
+  const seatRowCol = (input) => {
+    if (!input) return 0; // Handle empty input
+    const [rows, columns] = input.split(',').map(Number);
+    return [rows, columns];
+  }
 
  
 
@@ -24,9 +30,16 @@ export const CreateVenue = () => {
     event.preventDefault();
 
     // Calculating the number of seats for each section
-    const seatsLeft = calculateSeats(rcleft);
-    const seatsCenter = calculateSeats(rccenter);
-    const seatsRight = calculateSeats(rcright);
+    const seatsLeft = calculateSeats(rcleft, "Left");
+    const seatsCenter = calculateSeats(rccenter, "Center");
+    const seatsRight = calculateSeats(rcright, "Right");
+
+    const left = seatRowCol(rcleft);
+    const center = seatRowCol(rccenter);
+    const right = seatRowCol(rcright);
+
+    console.log(left[0], left[1], center[0], center[1], right[0], right[1]); 
+
 
     // Summing up the total number of seats
     const calculatedTotalSeats = seatsLeft + seatsCenter + seatsRight;
@@ -34,7 +47,7 @@ export const CreateVenue = () => {
 
     try {
       // Call handlecreateVenue with the collected data
-      await handlecreateVenue(venueName, calculatedTotalSeats, username, password);
+      await handlecreateVenue(venueName, calculatedTotalSeats, username, password, left[0], left[1], center[0], center[1], right[0], right[1]);
       // Additional logic for successful venue creation
       console.log("Venue creation successful");
       

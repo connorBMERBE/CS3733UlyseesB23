@@ -12,7 +12,7 @@ const [seatsCenter, setSeatsCenter] = React.useState([]);
 const [seatsRight, setSeatsRight] = React.useState([]);
 const [allSeats, setAllSeats] = React.useState([]);
 const [timerVisible, setTimerVisible] = React.useState(false);
-const [timerDuration, setTimerDuration] = React.useState(30); // 5 minutes in seconds
+const [timerDuration, setTimerDuration] = React.useState(300); // 5 minutes in seconds
 const [purchaseButton, setPurchaseButton] = React.useState(true);
 const [timerExpired, setTimerExpired] = React.useState(false);
 
@@ -160,10 +160,10 @@ return (
                         key={`left-${seatNumber}`}
                         className={`seat ${
                         selectedSeats.some(
-                            seat => seat.section === 'left' && seat.seatNumber === seatNumber
+                            seat => seat.section === 'left' && seat.row === rowIndex + 1 && seat.column === colIndex + 1
                         ) && 'selected'
                         } ${isSeatSold ? 'sold' : ''}`}
-                        onClick={() => !isSeatSold && handleSeatClick('left', currentRow, currentColumn)}
+                        onClick={() => !isSeatSold && handleSeatClick('left', rowIndex + 1, colIndex + 1)}
                     >
                         {`${currentRow}-${currentColumn}`}
                     </div>
