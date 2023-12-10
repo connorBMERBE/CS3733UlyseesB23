@@ -12,14 +12,39 @@ export const CreateShow = (e) => {
     const [successMessage, setSuccessMessage] = React.useState('');
     const [errorMessage, setErrorMessage] = React.useState('');
 
+    const formatDateTime = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+        const day = date.getDate().toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const seconds = date.getSeconds().toString().padStart(2, '0');
+      
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
     const handleCreateShow = async (e) =>{
         e.preventDefault();
         try {
             const username = parseJwt(localStorage.getItem('token')).userID;
-            const jsDate = new Date(date);
-            const formatedDate =  jsDate.toISOString().split('T')[0];
-            const response = await createShow(username, showName, formatedDate, time, price);
-            console.log(response);
+
+            // Parse date and time strings
+            const [month, day, year] = date.split('/');
+            const [hours, minutes] = time.slice(0, -2).split(':');
+            const ampm = time.slice(-2);
+
+            // Adjust hours for PM
+            const adjustedHours = ampm === 'PM' ? parseInt(hours, 10) + 12 : parseInt(hours, 10);
+
+            // Create Date object with parsed values
+            const jsDateTime = new Date(year, month - 1, day, adjustedHours, minutes);
+
+            // Format date for MySQL
+            const formattedDateTime = formatDateTime(jsDateTime);
+
+            console.log(formattedDateTime);
+
+            const response = await createShow(username, showName, formattedDateTime, time, price);
 
             if (response.data.statusCode === 200) {
                 setSuccessMessage("Show created successfully!");
