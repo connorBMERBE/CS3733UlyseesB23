@@ -157,7 +157,7 @@ export const VMDashboard = () => {
                                     .filter((show) => show.isActivated === 0)
                                     .map((show, index) => (
                                     <span key={index} id="inactive" className={activatedShow && activatedShow.showID === show.showID ? 'activateShowSpan' : ''}
-                                          onClick={() => handleActivationShowSelection(show)}>{show.showName} - {new Date(show.Date).toLocaleDateString('en-US', 
+                                          onClick={() => handleActivationShowSelection(show)}>{show.showName} - {new Date(show.showDate).toLocaleDateString('en-US', 
                                     {
                                        year: '2-digit', 
                                        month: '2-digit', 
@@ -189,7 +189,7 @@ export const VMDashboard = () => {
                                     .filter((show) => show.isActivated === 1)
                                     .map((show, index) => (
                                     <span key={index} className={selectedShow && selectedShow.showID === show.showID ? 'selectedShow' : ''}>
-                                        {show.showName} - {new Date(show.Date).toLocaleDateString('en-US', 
+                                        {show.showName} - {new Date(show.showDate).toLocaleDateString('en-US', 
                                     {
                                        year: '2-digit', 
                                        month: '2-digit', 

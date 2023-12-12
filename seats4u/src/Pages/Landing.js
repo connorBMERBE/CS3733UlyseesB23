@@ -139,7 +139,7 @@ export const Landing = () => {
                             filterShows.map((show, index) => (
                                 <Link to={`/show/${show.showID}`} key={index} className="showItem">
                                     <span className="showDetails">
-                                        {`${show.showName} | ${parseDate(show.Date)} | ${show.Time}`}
+                                        {`${show.showName} | ${parseDate(show.showDate)} | ${show.Time}`}
                                     </span>
                                 </Link>
                                 ))
