@@ -5,7 +5,7 @@ import {  } from '../Controller/Controller';
 //each block must have unique name, start row, end row, start col, end col, and price
 
 export const CreateBlock = (e) => {
-    const [showName, setBlockName] = React.useState('');
+    const [blockName, setBlockName] = React.useState('');
     const [startRow, setStartRow] = React.useState('');
     const [endRow, setEndRow] = React.useState('');
     const [startCol, setStartCol] = React.useState('');
