@@ -19,7 +19,7 @@ export const CreateBlock = (e) => {
         e.preventDefault();
         try {
             const username = parseJwt(localStorage.getItem('token')).userID;
-            const response = await CreateBlock(username, blockName, startRow, endRow, startCol, endCol, price);
+            const response = await CreateBlock(username, blockName, startRow, endRow, startCol, endCol, price, section);
             console.log(response);
 
             if (response.data.statusCode === 200) {
