@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import {  } from '../Controller/Controller';
+import { parseJwt } from '../Controller/Controller';
 
 //each block must have unique name, start row, end row, start col, end col, and price
 
@@ -19,9 +19,7 @@ export const CreateBlock = (e) => {
         e.preventDefault();
         try {
             const username = parseJwt(localStorage.getItem('token')).userID;
-            const jsDate = new Date(date);
-            const formatedDate =  jsDate.toISOString().split('T')[0];
-            const response = await createBlockw(username, showName, formatedDate, time, price);
+            const response = await CreateBlock(username, blockName, startRow, endRow, startCol, endCol, price);
             console.log(response);
 
             if (response.data.statusCode === 200) {
@@ -86,8 +84,6 @@ export const CreateBlock = (e) => {
                 {successMessage && <p className="success-message">{successMessage}</p>}
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
             </form>
-
-            <button type = "return"/>
 
             </div>
         </main>
