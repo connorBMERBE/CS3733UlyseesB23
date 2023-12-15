@@ -12,6 +12,7 @@ import PrivateRoutesAdmin from './Controller/PrivateRoutesAdmin.js';
 import ShowDetails from './Pages/showDetails.js';
 import EnjoyShow from './Pages/enjoyShow.js';
 import ShowHasBegun from './Pages/showHasBegun.js';
+import CreateBlock from './Pages/createBlock.js';
 
 function App() {
 
@@ -54,6 +55,7 @@ function App() {
       <Routes>
         <Route path = "/" element = {<Landing/>}/>
         <Route path = "/show/:showID" element = {<ShowDetails/>}/>
+        <Route path = "/show/createBlock" element = {<CreateBlock/>}/>
 
         <Route element = {<PrivateRoutesVM/>}>
           <Route path = "/test" element = {<Test/>} exact/>
