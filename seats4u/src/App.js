@@ -11,6 +11,7 @@ import CreateVenue from './Pages/CreateVenue.js';
 import PrivateRoutesAdmin from './Controller/PrivateRoutesAdmin.js';
 import ShowDetails from './Pages/showDetails.js';
 import EnjoyShow from './Pages/enjoyShow.js';
+import ShowHasBegun from './Pages/showHasBegun.js';
 import CreateBlock from './Pages/createBlock.js';
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
         <Route path = "/createVenue" element = {<CreateVenue/>}/>
         <Route path = "/failedLogin" element = {<FailedLogin/>}/>
         <Route path = "/purchased" element = {<EnjoyShow/>}/>
+        <Route path = "/showHasBegun" element = {<ShowHasBegun/>}/>
       </Routes>
     </div>
   );

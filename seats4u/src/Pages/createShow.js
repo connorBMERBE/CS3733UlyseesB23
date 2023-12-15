@@ -44,7 +44,16 @@ export const CreateShow = (e) => {
 
             console.log(formattedDateTime);
 
-            const response = await createShow(username, showName, formattedDateTime, time, price);
+            // Convert price to a float
+            const numericPrice = parseFloat(price.replace('$', ''));
+
+            // Check if the conversion was successful
+            if (isNaN(numericPrice)) {
+                setErrorMessage("Invalid price format");
+                return;
+            }
+
+            const response = await createShow(username, showName, formattedDateTime, time, numericPrice);
 
             if (response.data.statusCode === 200) {
                 setSuccessMessage("Show created successfully!");
@@ -95,7 +104,7 @@ export const CreateShow = (e) => {
                 <label>Time</label>
                 <input type="text" placeholder="hh:mm" onChange={(e) => setTime(e.target.value)} required/>
                 <label>Base Price</label>
-                <input type="text" placeholder="$-" onChange={(e) => setPrice(e.target.value)} required/>
+                <input type="text" placeholder="$--" onChange={(e) => setPrice(e.target.value)} required/>
                 <button type="submit"> Create Show </button>
                 </div>
 

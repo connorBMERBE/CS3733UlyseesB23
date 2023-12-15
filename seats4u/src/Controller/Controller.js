@@ -249,7 +249,6 @@ export async function listSectionSeats(showID, section) {
         });
 
         if (response.data.statusCode === 200) {
-            console.log("Seats Returned");
             return response.data.body;
 
         } else {
@@ -272,7 +271,6 @@ export async function listAvailableSeats(showID) {
         });
 
         if (response.data.statusCode === 200) {
-            console.log("Seats Returned");
             return response.data.body;
 
         } else {
@@ -381,11 +379,11 @@ export async function activateShow(showID, rowLeft, colLeft, rowCenter, colCente
 
         if (response.data.statusCode === 200) {
             const ticketCreationLeft = await createTickets(showID, "Left", rowLeft, colLeft);
-            //console.log("Ticket Creation Left: ", ticketCreationLeft);
+            console.log("Ticket Creation Left: ", ticketCreationLeft);
             const ticketCreationCenter = await createTickets(showID, "Center", rowCenter, colCenter);
-            //console.log("Ticket Creation Center: ", ticketCreationCenter);
+            console.log("Ticket Creation Center: ", ticketCreationCenter);
             const ticketCreationRight = await createTickets(showID, "Right", rowRight, colRight);
-            //console.log("Ticket Creation Right: ", ticketCreationRight);
+            console.log("Ticket Creation Right: ", ticketCreationRight);
 
             if (ticketCreationLeft && ticketCreationCenter && ticketCreationRight) {
                 return true;
@@ -419,5 +417,41 @@ export async function deleteShowVM(showID) {
         }
     } catch (error) {
         console.error("Error fetching shows:", error);
+    }
+}
+
+
+//Function for helping to generate Show Reports
+export async function showReport(showID) {
+    try {
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/generateShowReport", {
+            "showID" : showID
+        });
+
+        if (response.data.statusCode === 200) {
+            return response.data.body;
+        } else {
+            return [];
+        }
+        
+    } catch (error) {
+        console.error("Error generating show report: ", error);
+    }
+}
+
+//Function for checking the showStatus
+export async function showStatus(showID) {
+    try {
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/checkShowStatus",{
+            "showID" : showID
+        });
+
+        if (response.data.statusCode === 200) {
+            return response.data.body; 
+        } else {
+            return 1;
+        }
+    } catch (error) {
+        console.error("Error in checking the status: ", error);
     }
 }

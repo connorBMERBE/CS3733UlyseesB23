@@ -1,7 +1,8 @@
 import './showDetails.css'
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { listSectionSeats, listAvailableSeats, purchaseSeats } from '../Controller/Controller';
+import { listSectionSeats, listAvailableSeats, purchaseSeats, showStatus } from '../Controller/Controller';
+import LoadingSpinner from './LoadingSpinner.js';
 
 
 export const ShowDetails = () => {
@@ -15,6 +16,7 @@ const [timerVisible, setTimerVisible] = React.useState(false);
 const [timerDuration, setTimerDuration] = React.useState(300); // 5 minutes in seconds
 const [purchaseButton, setPurchaseButton] = React.useState(true);
 const [timerExpired, setTimerExpired] = React.useState(false);
+const [loading, setLoading] = React.useState(true);
 
 //Function to start the timer
 const startTimer = () => {
@@ -77,25 +79,34 @@ const handleSeatClick = (section, row, column) => {
 React.useEffect(() => {
     const fetchSeats = async() => {
         try {
-            const seatsLeft = await listSectionSeats(showID, "Left");
-            const seatsCenter = await listSectionSeats(showID, "Center");
-            const seatsRight = await listSectionSeats(showID, "Right");
-            const parsedSeatsLeft = JSON.parse(seatsLeft);
-            const parsedSeatsCenter = JSON.parse(seatsCenter);
-            const parsedSeatsRight = JSON.parse(seatsRight);
-            
-            setSeatsLeft([parsedSeatsLeft[0].numRows, parsedSeatsLeft[0].numCols]);
-            setSeatsCenter([parsedSeatsCenter[0].numRows, parsedSeatsCenter[0].numCols]);
-            setSeatsRight([parsedSeatsRight[0].numRows, parsedSeatsRight[0].numCols]);
+            setLoading(true);
+            const currentShowStatus = await showStatus(showID);
+            console.log(currentShowStatus[0]);
 
-            const availableSeats = await listAvailableSeats(showID);
-            const parsedSeats = JSON.parse(availableSeats);
-            setAllSeats(parsedSeats);
+            if (currentShowStatus[0].isActivated === 0) {
+                window.location.href = '/showHasBegun';
+            } else {
+                const seatsLeft = await listSectionSeats(showID, "Left");
+                const seatsCenter = await listSectionSeats(showID, "Center");
+                const seatsRight = await listSectionSeats(showID, "Right");
+                const parsedSeatsLeft = JSON.parse(seatsLeft);
+                const parsedSeatsCenter = JSON.parse(seatsCenter);
+                const parsedSeatsRight = JSON.parse(seatsRight);
+                
+                setSeatsLeft([parsedSeatsLeft[0].numRows, parsedSeatsLeft[0].numCols]);
+                setSeatsCenter([parsedSeatsCenter[0].numRows, parsedSeatsCenter[0].numCols]);
+                setSeatsRight([parsedSeatsRight[0].numRows, parsedSeatsRight[0].numCols]);
+    
+                const availableSeats = await listAvailableSeats(showID);
+                const parsedSeats = JSON.parse(availableSeats);
+    
+                setAllSeats(parsedSeats);
+            }
         } 
         catch (error) {
             console.error("Error fetching shows:", error);
         } finally {
-
+            setLoading(false);
         }
     }
 
@@ -105,17 +116,23 @@ React.useEffect(() => {
 
 const confirmPurchaseHandler = async () => {
     try {
-        const result = await purchaseSeats(showID, selectedSeats);
-        console.log(result);
-        
-        if (result.length === 0) {
-            console.log("Purchase Successfull");
-            resetTimer();
-            window.location.href = "/purchased";
-            
+        const currentShowStatus = await showStatus(showID);
+
+        if (currentShowStatus[0].isActivated === 0) {
+            window.location.href = '/showHasBegun';
         } else {
-            //Handle Logic for reloading the seat selection graphic
-            setPurchaseButton(false);
+            const result = await purchaseSeats(showID, selectedSeats);
+            console.log(result);
+            
+            if (result.length === 0) {
+                console.log("Purchase Successfull");
+                resetTimer();
+                window.location.href = "/purchased";
+                
+            } else {
+                //Handle Logic for reloading the seat selection graphic
+                setPurchaseButton(false);
+            }
         }
     } catch (error) {
         console.log(error);
@@ -130,6 +147,19 @@ const goHome = () => {
     window.location.href = "/";
 }
 
+// Function to calculate the total price of selected seats
+const calculateTotalPrice = () => {
+    return selectedSeats.reduce((total, seat) => {
+        const matchingSeat = allSeats.find(
+        (s) =>
+            s.section === seat.section &&
+            s.seatRow === seat.row &&
+            s.seatCol === seat.column
+        );
+        return total + (matchingSeat ? matchingSeat.seatPrice : 0);
+    }, 0);
+};
+
 return (
     <main>
         <div>
@@ -137,6 +167,11 @@ return (
                 <p className = "loginTrigger" onClick={goHome}> Home </p>
                 <p className = "no-hover"> Seats4You </p>
             </div>
+        { loading ? (
+            <div className="loadingContainer">
+                <LoadingSpinner/>
+            </div>) : (
+        
         <div className="venue">
             <div className="section" id="left">
             <h2>Left</h2>
@@ -155,18 +190,33 @@ return (
                         seat.isSold === 1
                     );
 
+                    // Find the corresponding seat in allSeats array
+                    const seat = allSeats.find(
+                        seat =>
+                            seat.section === 'Left' &&
+                            seat.seatRow === currentRow &&
+                            seat.seatCol === currentColumn
+                    );
+
                     return (
-                    <div
-                        key={`left-${seatNumber}`}
-                        className={`seat ${
-                        selectedSeats.some(
-                            seat => seat.section === 'left' && seat.row === rowIndex + 1 && seat.column === colIndex + 1
-                        ) && 'selected'
-                        } ${isSeatSold ? 'sold' : ''}`}
-                        onClick={() => !isSeatSold && handleSeatClick('left', rowIndex + 1, colIndex + 1)}
-                    >
-                        {`${currentRow}-${currentColumn}`}
-                    </div>
+                        <div
+                            key={`left-${seatNumber}`}
+                            className={`seat ${
+                                selectedSeats.some(
+                                seat => seat.section === 'Left' && seat.row === rowIndex + 1 && seat.column === colIndex + 1)
+                                ? 'selected'
+                                : isSeatSold
+                                ? 'sold'
+                                : (seat && seat.seatPrice < 20)
+                                ? 'low'
+                                : (seat && seat.seatPrice < 55)
+                                ? 'mid' 
+                                : 'high'
+                            }`}
+                            onClick={() => !isSeatSold && handleSeatClick('Left', rowIndex + 1, colIndex + 1)}
+                        >
+                            {`${currentRow}-${currentColumn}`}
+                        </div>
                     );
                 })}
                 </div>
@@ -188,21 +238,70 @@ return (
                                 seat.seatCol === colIndex + 1 &&
                                 seat.isSold === 1
                             );
+
+                        // Find the corresponding seat in allSeats array
+                        const seat = allSeats.find(
+                            seat =>
+                                seat.section === 'Center' &&
+                                seat.seatRow === rowIndex + 1 &&
+                                seat.seatCol === colIndex + 1
+                        );
+
                         return (
-                        <div
-                            key={`center-${seatNumber}`}
-                            className={`seat ${selectedSeats.some(
-                            seat => seat.section === 'center' && seat.row === rowIndex + 1 && seat.column === colIndex + 1
-                            ) && 'selected'}
-                            ${isSeatSold ? 'sold' : ''}`}
-                            onClick={() => !isSeatSold && handleSeatClick('center', rowIndex + 1, colIndex + 1)}
-                        >
-                            {`${rowIndex + 1}-${colIndex + 1}`}
-                        </div>
+                            <div
+                                key={`center-${seatNumber}`}
+                                className={`seat ${
+                                    selectedSeats.some(
+                                    seat => seat.section === 'Center' && seat.row === rowIndex + 1 && seat.column === colIndex + 1)
+                                    ? 'selected'
+                                    : isSeatSold
+                                    ? 'sold'
+                                    : (seat && seat.seatPrice < 20)
+                                    ? 'low'
+                                    : (seat && seat.seatPrice < 55)
+                                    ? 'mid' 
+                                    : 'high'
+                                }`}
+                                onClick={() => !isSeatSold && handleSeatClick('Center', rowIndex + 1, colIndex + 1)}
+                            >
+                                {`${ rowIndex + 1}-${colIndex + 1}`}
+                            </div>
                         );
                     })}
                     </div>
                 ))}
+
+                {allSeats.length > 0 && (
+                        <div className="containerMenu">
+                            <div className="containerMock">
+
+                                <div className="selected-seats-container">
+                                    <h2>Selected Seats</h2>
+                                    <ul>
+                                    {selectedSeats.map((seat) => {
+                                        const matchingSeat = allSeats.find(
+                                        (s) =>
+                                            s.section === seat.section &&
+                                            s.seatRow === seat.row &&
+                                            s.seatCol === seat.column
+                                        );
+
+                                        return (
+                                        <li key={`${seat.section}-${seat.row}-${seat.column}`}>
+                                            {`${seat.section} - ${seat.row}-${seat.column}: ${
+                                            matchingSeat ? `$${matchingSeat.seatPrice.toFixed(2)}` : 'N/A'
+                                            }`}
+                                        </li>
+                                        );
+                                    })}
+                                    </ul>
+                                </div>
+
+                                <p>Total: ${calculateTotalPrice().toFixed(2)}</p>
+
+                            </div>
+                        </div>
+                )}
 
                 <div className="confirm-purchase">
                     {purchaseButton && !timerExpired ? (<button disabled={selectedSeats.length === 0} onClick={confirmPurchaseHandler}> Confirm Purchase </button>) :
@@ -235,23 +334,40 @@ return (
                                 seat.seatCol === colIndex + 1 &&
                                 seat.isSold === 1
                             );
+
+                        // Find the corresponding seat in allSeats array
+                        const seat = allSeats.find(
+                            seat =>
+                                seat.section === 'Right' &&
+                                seat.seatRow === rowIndex + 1 &&
+                                seat.seatCol === colIndex + 1
+                        );
+
                         return (
-                        <div
-                            key={`right-${seatNumber}`}
-                            className={`seat ${selectedSeats.some(
-                            seat => seat.section === 'right' && seat.row === rowIndex + 1 && seat.column === colIndex + 1
-                            ) && 'selected'}
-                            ${isSeatSold ? 'sold' : ''}`}
-                            onClick={() => !isSeatSold && handleSeatClick('right', rowIndex + 1, colIndex + 1)}
-                        >
-                            {`${rowIndex + 1}-${colIndex + 1}`}
-                        </div>
+                            <div
+                                key={`right-${seatNumber}`}
+                                className={`seat ${
+                                    selectedSeats.some(
+                                    seat => seat.section === 'Right' && seat.row === rowIndex + 1 && seat.column === colIndex + 1)
+                                    ? 'selected'
+                                    : isSeatSold
+                                    ? 'sold'
+                                    : (seat && seat.seatPrice < 20)
+                                    ? 'low'
+                                    : (seat && seat.seatPrice < 55)
+                                    ? 'mid' 
+                                    : 'high'
+                                }`}
+                                onClick={() => !isSeatSold && handleSeatClick('Right', rowIndex + 1, colIndex + 1)}
+                            >
+                                {`${ rowIndex + 1}-${colIndex + 1}`}
+                            </div>
                         );
                     })}
                     </div>
                 ))}
             </div>
-        </div>
+        </div> )}
         </div>
     </main>
     );
