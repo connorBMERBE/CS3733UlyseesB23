@@ -1,6 +1,6 @@
 import './VMDashboard.css';
 import React from 'react';
-import { parseJwt, listVenue, deleteVenue, listShowsForVenue, activateShow, deleteShowVM, showReport} from '../Controller/Controller.js';
+import { parseJwt, listVenue, deleteVenue, listShowsForVenue, activateShow, deleteShowVM, showReport, listBlockForShows} from '../Controller/Controller.js';
 
 export const VMDashboard = () => {
     const [venue, setVenue] = React.useState([]);
@@ -14,6 +14,7 @@ export const VMDashboard = () => {
     const [reportLoading, setReportLoading] = React.useState(false);
     const [report, setReport] = React.useState(null);
     const [showReportData, setShowReport] = React.useState(null);
+    const [blocks, setBlocks] = React.useState([]);
 
 
     React.useEffect(() => {
@@ -109,7 +110,13 @@ export const VMDashboard = () => {
         const response = await activateShow(activatedShow.showID, venue[0].rowLeft, venue[0].colLeft, venue[0].rowCenter, venue[0].colCenter, venue[0].rowRight, venue[0].colRight);
         try {
             if (response) {
-                window.location.reload();
+                const queryParams = new URLSearchParams({
+                    showID: activatedShow.showID,
+                });
+
+                // Navigate to the new page with the query parameters
+                window.location.href = `/show/createBlock/${Number(queryParams.get('showID'))}`;
+
             } else {
                 setaActivationFailure(true);
             }
@@ -130,7 +137,10 @@ export const VMDashboard = () => {
             // If a new show is clicked, set the show data
             setShowReport(show);
             const fetchedReport = await showReport(show.showID);
+            const fetchedBlocks = await listBlockForShows(show.showID);
+            console.log(fetchedBlocks.blocks);
             setReport(JSON.parse(fetchedReport));
+            setBlocks(fetchedBlocks.blocks);
           }
         } catch (error) {
           console.error("Error fetching report:", error);
@@ -231,15 +241,26 @@ export const VMDashboard = () => {
                 </div>
 
                 <div className = "dashboardContainer">
-                <h1 className = "VMVenueLabel">Shows Report</h1>
-                        <div className = "vmDashboardMenu" id="venueMenu">
+                <h1 className = "VMVenueLabelReport">Shows Report</h1>
+                        <div className = "vmDashboardMenuReport" id="venueMenu">
                             {reportLoading ? (
                                 <span>Loading...</span>
                                 ) : report ? (
                                     <div>
-                                        <span> Proceeds: ${report.sumSoldSeatsValue} </span>
+                                        <span> Total Proceeds: ${report.sumSoldSeatsValue} </span>
                                         <span> Seats Sold: {report.soldSeats}/{report.totalSeats} </span>
+                                        <div>
+                                            {blocks.map((block, index) => (
+                                                <span className="blockItems" key={index}>
+                                                    <strong>{block.blockName}</strong>
+                                                    <p>Seats Sold: {block.seatsSold}/{block.totalSeats}</p>
+                                                    <p>Block Proceeds: ${block.totalProceeds}</p>
+                                                    <p>Price Per Seat: ${block.seatPrice}</p>
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
+                                    
                                 ): (
                                 <span>Select Show</span>
                                 )}

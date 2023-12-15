@@ -1,6 +1,7 @@
 import React from 'react';
+import { createBlockForShow } from '../Controller/Controller';
 import { useParams } from 'react-router-dom';
-import { parseJwt } from '../Controller/Controller';
+import './createBlock.css';
 
 //each block must have unique name, start row, end row, start col, end col, and price
 
@@ -14,21 +15,30 @@ export const CreateBlock = (e) => {
     const [section, setSection] = React.useState('');
     const [successMessage, setSuccessMessage] = React.useState('');
     const [errorMessage, setErrorMessage] = React.useState('');
+    const { showID } = useParams(); 
+
+    React.useEffect(() => {
+        // You can access showID here
+        console.log('showID:', showID);
+    },[showID]);
+
 
     const handleCreateBlock = async (e) =>{
         e.preventDefault();
         try {
-            const username = parseJwt(localStorage.getItem('token')).userID;
-            const response = await CreateBlock(username, blockName, startRow, endRow, startCol, endCol, price, section);
+            // Convert price to a float
+            const numericPrice = parseFloat(price.replace('$', ''));
+
+            const response = await createBlockForShow(showID, blockName, startRow, endRow, startCol, endCol, numericPrice, section);
             console.log(response);
 
-            if (response.data.statusCode === 200) {
-                setSuccessMessage("Show created successfully!");
+            if (response) {
+                setSuccessMessage("Block created successfully!");
                 setTimeout(() => {
                     window.location.reload();
                   }, 3000); 
             } else {
-                setErrorMessage("Could not create the show");
+                setErrorMessage("Could not Create the Block");
             }
 
         } catch (error) {
@@ -51,14 +61,13 @@ export const CreateBlock = (e) => {
     return(
         <main>
             <div>
-
             <div className = "navBar">
                 <p className = "loginTrigger" onClick = {logoutHandler}> Logout</p>
                 <p className = "loginTrigger" onClick = {backToDashHandler}> Back to Dashboard</p>
                 <p className = "no-hover"> Seats4You </p>
             </div>
 
-            <h1>
+            <h1 className="blockHeader">
                 Create Block
             </h1>
 
@@ -76,9 +85,9 @@ export const CreateBlock = (e) => {
                 <input type="text" placeholder="startColumnNumber" onChange={(e) => setStartCol(e.target.value)} required/>
                 <label>End Column</label>
                 <input type="text" placeholder="endColumnNumber" onChange={(e) => setEndCol(e.target.value)} required/>
-                <label>Base Price</label>
+                <label>Block Price</label>
                 <input type="text" placeholder="$-" onChange={(e) => setPrice(e.target.value)} required/>
-                <button type="submit"> Create Show </button>
+                <button type="submit"> Create Block </button>
                 </div>
 
                 {successMessage && <p className="success-message">{successMessage}</p>}

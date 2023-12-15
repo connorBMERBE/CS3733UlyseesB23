@@ -267,3 +267,37 @@
 .vmDashboardMenu span:hover .tooltip {
   display: block;
 }
+
+.vmDashboardMenuReport {
+  width: 500px;
+  height: 300px;
+  overflow-y: auto;
+  text-align: center;
+  font-size: 3em;
+}
+
+.vmDashboardMenuReport span {
+  background-color: white;
+  color: black;
+  display: block;
+  padding: 12px;
+  text-decoration: none;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.vmDashboardMenuReport span:hover {
+  background-color: #3E3F53;
+  color: white;
+}
+
+.VMVenueLabelReport {
+  font-size: 3em;
+  margin: 20px;
+  color: red;
+  margin-top: 169px;
+  }
+
+.blockItems p {
+  margin: 3px 0; 
+}

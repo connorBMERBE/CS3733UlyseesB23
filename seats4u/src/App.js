@@ -55,12 +55,12 @@ function App() {
       <Routes>
         <Route path = "/" element = {<Landing/>}/>
         <Route path = "/show/:showID" element = {<ShowDetails/>}/>
-        <Route path = "/show/createBlock" element = {<CreateBlock/>}/>
 
         <Route element = {<PrivateRoutesVM/>}>
           <Route path = "/test" element = {<Test/>} exact/>
           <Route path = "/vmDashboard" element = {<VMDashboard/>}/>
           <Route path = "/vmDashboard/createShow" element = {<CreateShow/>}/>
+          <Route path = "/show/createBlock/:showID" element = {<CreateBlock/>}/>
         </Route>
 
         <Route element = {<PrivateRoutesAdmin/>}>
