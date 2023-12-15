@@ -2,6 +2,16 @@ body {
     background-color: #a7a5a5;
 }
 
+
+.landingBody {
+    background: url('pexels-photo-1105666.jpeg');
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -100;
+}
+
 .navBar {
     background-color: #3E3F53;
     overflow: hidden;

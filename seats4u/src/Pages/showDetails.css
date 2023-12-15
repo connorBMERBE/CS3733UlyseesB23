@@ -36,8 +36,26 @@
     border: 1px solid maroon;
 }
 
+.seat.low {
+    background-color: green;
+    color: white;
+    border: 1px solid black;
+}
+
+.seat.mid {
+    background-color: yellow;
+    color: black;
+    border: 1px solid black;
+}
+
+.seat.high {
+    background-color: rgb(177, 72, 72);
+    color: black;
+    border: 1px solid black;
+}
+
 .confirm-purchase {
-    margin-top: 300px; /* Adjust the margin as needed */
+    margin-top: 100px; /* Adjust the margin as needed */
     display: flex;
     justify-content: center;
 }
@@ -67,4 +85,52 @@
     cursor: pointer;
     border-radius: 5px;
     outline: none;
+}
+
+.selected-seats {
+    margin-top: 20px;
+    background-color: #fff;
+    margin-bottom: -200px;
+    height: 100px;
+    overflow-y: auto;
+}
+  
+.selected-seats h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+  
+.containerMenu ul {
+    list-style-type: none;
+    padding: 0;
+}
+  
+.containerMenu li {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+  
+.containerMock p {
+    font-size: 24px;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.selected-seats-container {
+    margin-top: 50px;
+    height: 200px; /* Set the desired height */
+    overflow-y: auto;
+    background-color: #fff;
+}
+
+.containerMenu {
+    background-color: white;
+}
+  
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
 }

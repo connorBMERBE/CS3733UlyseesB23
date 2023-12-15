@@ -1,6 +1,6 @@
 import './VMDashboard.css';
 import React from 'react';
-import { parseJwt, listVenue, deleteVenue, listShowsForVenue, activateShow, deleteShowVM} from '../Controller/Controller.js';
+import { parseJwt, listVenue, deleteVenue, listShowsForVenue, activateShow, deleteShowVM, showReport} from '../Controller/Controller.js';
 
 export const VMDashboard = () => {
     const [venue, setVenue] = React.useState([]);
@@ -11,6 +11,10 @@ export const VMDashboard = () => {
     const [activatedShow, setActiveShow] = React.useState(null);
     const [activationFailure, setaActivationFailure] = React.useState(false);
     const [deletionFailure, setDeletionFailure] = React.useState(false);
+    const [reportLoading, setReportLoading] = React.useState(false);
+    const [report, setReport] = React.useState(null);
+    const [showReportData, setShowReport] = React.useState(null);
+
 
     React.useEffect(() => {
         async function listVenueHandler() {
@@ -30,25 +34,26 @@ export const VMDashboard = () => {
 
     React.useEffect(() => {
         async function fetchShowsForVenue() {
-            try {
-                const response = await listShowsForVenue(venue[0].venueID);
-                if (response.length > 0) {
-                    const sorted = response.sort((a, b) => {
-                        const dateA = new Date(a.Date).toISOString(); //Ensures that dates are in a consistent format
-                        const dateB = new Date(b.Date).toISOString();
-                        return dateB.localeCompare(dateA); // Sort in descending order (most recent first)
-                    });
-                    setShows(sorted);
-                } else {
-                    setShows([]);
-                }
-            } catch (error) {
-                console.log(error);
+          try {
+            const response = await listShowsForVenue(venue[0].venueID);
+            if (response.length > 0) {
+              const sorted = response.sort((a, b) => {
+                // Assuming a.Date and b.Date are DateTime objects
+                const dateA = new Date(a.Date).getTime(); // Convert DateTime to milliseconds since epoch
+                const dateB = new Date(b.Date).getTime();
+                return dateB - dateA; // Sort in descending order (most recent first)
+              });
+              setShows(sorted);
+            } else {
+              setShows([]);
             }
+          } catch (error) {
+            console.log(error);
+          }
         }
-
+      
         fetchShowsForVenue();
-    }, [venue]);
+      }, [venue]);
 
     const deleteVenueHandler = async () => {
         try {
@@ -101,10 +106,7 @@ export const VMDashboard = () => {
     }
 
     const handleActivateShow = async () => {
-        console.log(venue);
-        console.log(activatedShow.showID, venue[0].rowLeft, venue[0].colLeft, venue[0].rowCenter, venue[0].colCenter, venue[0].rowRight, venue[0].colRight);
         const response = await activateShow(activatedShow.showID, venue[0].rowLeft, venue[0].colLeft, venue[0].rowCenter, venue[0].colCenter, venue[0].rowRight, venue[0].colRight);
-        console.log(response);
         try {
             if (response) {
                 window.location.reload();
@@ -115,6 +117,27 @@ export const VMDashboard = () => {
             setaActivationFailure(true);
         }
     }
+
+    const handleShowReport = async (show) => {
+        setReportLoading(true);
+      
+        try {
+          if (showReportData && showReportData.showID === show.showID) {
+            // If the same show is clicked again, reset the report data
+            setShowReport(null);
+            setReport(null);
+          } else {
+            // If a new show is clicked, set the show data
+            setShowReport(show);
+            const fetchedReport = await showReport(show.showID);
+            setReport(JSON.parse(fetchedReport));
+          }
+        } catch (error) {
+          console.error("Error fetching report:", error);
+        } finally {
+          setReportLoading(false);
+        }
+      };
 
     return(
         <main>
@@ -188,20 +211,42 @@ export const VMDashboard = () => {
                                     shows
                                     .filter((show) => show.isActivated === 1)
                                     .map((show, index) => (
-                                    <span key={index} className={selectedShow && selectedShow.showID === show.showID ? 'selectedShow' : ''}>
+                                    <span key={index} className={selectedShow && selectedShow.showID === show.showID ? 'selectedShow' : ''}
+                                    onClick={()=>handleShowReport(show)}>
                                         {show.showName} - {new Date(show.showDate).toLocaleDateString('en-US', 
                                     {
                                        year: '2-digit', 
                                        month: '2-digit', 
                                        day: '2-digit',
                                        timeZone: 'UTC'
-                                    })}</span>
+                                    })}
+                                </span>
                                 ))
                                 ) : (
                                 <span>No Shows Present</span>
                                 )}
                         </div>
+
+                        
                 </div>
+
+                <div className = "dashboardContainer">
+                <h1 className = "VMVenueLabel">Shows Report</h1>
+                        <div className = "vmDashboardMenu" id="venueMenu">
+                            {reportLoading ? (
+                                <span>Loading...</span>
+                                ) : report ? (
+                                    <div>
+                                        <span> Proceeds: ${report.sumSoldSeatsValue} </span>
+                                        <span> Seats Sold: {report.soldSeats}/{report.totalSeats} </span>
+                                    </div>
+                                ): (
+                                <span>Select Show</span>
+                                )}
+                        </div>    
+                </div>
+
+            
             </div>
         </main>
     );
