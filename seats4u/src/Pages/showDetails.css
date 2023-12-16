@@ -134,3 +134,8 @@
     justify-content: center;
     margin-top: 50px;
 }
+
+.sold-out-message {
+    margin-top: 70px;
+    color: red;
+}

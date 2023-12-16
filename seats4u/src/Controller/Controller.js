@@ -488,7 +488,7 @@ export async function createBlockForShow(showID, blockName, startRow, endRow, st
 export async function listBlockForShows(showID) {
     try {
         const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/listBlocksForShow", {
-            showID: "showID"
+            "showID" : showID
         });
 
         if (response.data.statusCode === 200) {
@@ -498,5 +498,27 @@ export async function listBlockForShows(showID) {
         }
     } catch (error) {
         console.error("Error in listing blocks: ", error);
+    }
+}
+
+
+//Function responsible for Delete Block 
+export async function deleteBlock(showID, blockName) {
+    try {
+        const response = await Axios.post('https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/deleteBlock', {
+            "showID" : showID,
+            "blockName": blockName
+        });
+
+        if (response.data.statusCode === 200) {
+            return response.data.body;
+        } else {
+            console.error("Error deleting blocks:", {
+                statusCode: response.data.statusCode,
+                body: response.data.body
+            });
+        }
+    } catch (error) {
+        console.error("Error deleting blocks:", error);
     }
 }

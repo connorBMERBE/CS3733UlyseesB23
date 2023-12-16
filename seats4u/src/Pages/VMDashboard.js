@@ -138,9 +138,10 @@ export const VMDashboard = () => {
             setShowReport(show);
             const fetchedReport = await showReport(show.showID);
             const fetchedBlocks = await listBlockForShows(show.showID);
+            const filteredBlocks = fetchedBlocks.blocks.filter(block => block.blockName !== 'Default');
             console.log(fetchedBlocks.blocks);
             setReport(JSON.parse(fetchedReport));
-            setBlocks(fetchedBlocks.blocks);
+            setBlocks(filteredBlocks);
           }
         } catch (error) {
           console.error("Error fetching report:", error);

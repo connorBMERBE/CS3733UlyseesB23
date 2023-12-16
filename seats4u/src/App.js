@@ -13,6 +13,7 @@ import ShowDetails from './Pages/showDetails.js';
 import EnjoyShow from './Pages/enjoyShow.js';
 import ShowHasBegun from './Pages/showHasBegun.js';
 import CreateBlock from './Pages/createBlock.js';
+import DeleteBlock from './Pages/DeleteBlock.js';
 
 function App() {
 
@@ -61,6 +62,7 @@ function App() {
           <Route path = "/vmDashboard" element = {<VMDashboard/>}/>
           <Route path = "/vmDashboard/createShow" element = {<CreateShow/>}/>
           <Route path = "/show/createBlock/:showID" element = {<CreateBlock/>}/>
+          <Route path = "/show/deleteBlock/:showID" element = {<DeleteBlock/>}/>
         </Route>
 
         <Route element = {<PrivateRoutesAdmin/>}>

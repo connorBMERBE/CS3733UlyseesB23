@@ -17,6 +17,8 @@ const [timerDuration, setTimerDuration] = React.useState(300); // 5 minutes in s
 const [purchaseButton, setPurchaseButton] = React.useState(true);
 const [timerExpired, setTimerExpired] = React.useState(false);
 const [loading, setLoading] = React.useState(true);
+const [allSeatsSold, setAllSeatsSold] = React.useState(false);
+
 
 //Function to start the timer
 const startTimer = () => {
@@ -101,6 +103,11 @@ React.useEffect(() => {
                 const parsedSeats = JSON.parse(availableSeats);
     
                 setAllSeats(parsedSeats);
+
+                
+                // Check if all available seats are sold
+                const allSeatsSold = parsedSeats.every(seat => seat.isSold === 1);
+                setAllSeatsSold(allSeatsSold);
             }
         } 
         catch (error) {
@@ -171,7 +178,8 @@ return (
             <div className="loadingContainer">
                 <LoadingSpinner/>
             </div>) : (
-        
+        <div>
+
         <div className="venue">
             <div className="section" id="left">
             <h2>Left</h2>
@@ -222,7 +230,7 @@ return (
                 </div>
             ))}
             </div>
-
+                
 
             <div className="section" id="center">
                 <h2>Center</h2>
@@ -271,37 +279,45 @@ return (
                     </div>
                 ))}
 
-                {allSeats.length > 0 && (
-                        <div className="containerMenu">
-                            <div className="containerMock">
-
-                                <div className="selected-seats-container">
-                                    <h2>Selected Seats</h2>
-                                    <ul>
-                                    {selectedSeats.map((seat) => {
-                                        const matchingSeat = allSeats.find(
-                                        (s) =>
-                                            s.section === seat.section &&
-                                            s.seatRow === seat.row &&
-                                            s.seatCol === seat.column
-                                        );
-
-                                        return (
-                                        <li key={`${seat.section}-${seat.row}-${seat.column}`}>
-                                            {`${seat.section} - ${seat.row}-${seat.column}: ${
-                                            matchingSeat ? `$${matchingSeat.seatPrice.toFixed(2)}` : 'N/A'
-                                            }`}
-                                        </li>
-                                        );
-                                    })}
-                                    </ul>
-                                </div>
-
-                                <p>Total: ${calculateTotalPrice().toFixed(2)}</p>
-
-                            </div>
+                {allSeatsSold ? 
+                    (
+                        <div className="sold-out-message">
+                            <h1>Sold Out</h1>
                         </div>
+                    ) : (
+                        allSeats.length > 0 && (
+                            <div className="containerMenu">
+                                <div className="containerMock">
+
+                                    <div className="selected-seats-container">
+                                        <h2>Selected Seats</h2>
+                                        <ul>
+                                            {selectedSeats.map((seat) => {
+                                                const matchingSeat = allSeats.find(
+                                                    (s) =>
+                                                        s.section === seat.section &&
+                                                        s.seatRow === seat.row &&
+                                                        s.seatCol === seat.column
+                                                );
+
+                                                return (
+                                                    <li key={`${seat.section}-${seat.row}-${seat.column}`}>
+                                                        {`${seat.section} - ${seat.row}-${seat.column}: ${
+                                                            matchingSeat ? `$${matchingSeat.seatPrice.toFixed(2)}` : 'N/A'
+                                                        }`}
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </div>
+
+                                    <p>Total: ${calculateTotalPrice().toFixed(2)}</p>
+
+                                </div>
+                            </div>
+                        )
                 )}
+
 
                 <div className="confirm-purchase">
                     {purchaseButton && !timerExpired ? (<button disabled={selectedSeats.length === 0} onClick={confirmPurchaseHandler}> Confirm Purchase </button>) :
@@ -366,6 +382,7 @@ return (
                     })}
                     </div>
                 ))}
+            </div>
             </div>
         </div> )}
         </div>
