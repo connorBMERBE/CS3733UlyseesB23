@@ -455,3 +455,70 @@ export async function showStatus(showID) {
         console.error("Error in checking the status: ", error);
     }
 }
+
+
+//Function responsible for creatingBlocks
+export async function createBlockForShow(showID, blockName, startRow, endRow, startCol, endCol, price, section) {
+    try {
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/createBlock", {
+            "showID" : showID, 
+            "blockName": blockName,
+            "startRow": startRow,
+            "endRow": endRow,
+            "startCol": startCol,
+            "endCol": endCol,
+            "price": price,
+            "section": section
+        });
+
+        console.log(response);
+
+        if (response.data.statusCode === 200) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+        console.error("Error in checking the status: ", error);
+    }
+}
+
+//Function responsible for listing Blocks
+export async function listBlockForShows(showID) {
+    try {
+        const response = await Axios.post("https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/listBlocksForShow", {
+            "showID" : showID
+        });
+
+        if (response.data.statusCode === 200) {
+            return JSON.parse(response.data.body);
+        } else {
+            return [];
+        }
+    } catch (error) {
+        console.error("Error in listing blocks: ", error);
+    }
+}
+
+
+//Function responsible for Delete Block 
+export async function deleteBlock(showID, blockName) {
+    try {
+        const response = await Axios.post('https://j1e9gw8669.execute-api.us-east-1.amazonaws.com/Initial/deleteBlock', {
+            "showID" : showID,
+            "blockName": blockName
+        });
+
+        if (response.data.statusCode === 200) {
+            return response.data.body;
+        } else {
+            console.error("Error deleting blocks:", {
+                statusCode: response.data.statusCode,
+                body: response.data.body
+            });
+        }
+    } catch (error) {
+        console.error("Error deleting blocks:", error);
+    }
+}

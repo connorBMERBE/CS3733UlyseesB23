@@ -1,49 +1,34 @@
 import React from 'react';
-import { createBlockForShow, listBlockForShows } from '../Controller/Controller';
+import { deleteBlock, listBlockForShows } from '../Controller/Controller';
 import { Link, useParams } from 'react-router-dom';
 import './createBlock.css';
 
 //each block must have unique name, start row, end row, start col, end col, and price
 
-export const CreateBlock = (e) => {
+export const DeleteBlock = (e) => {
     const [blockName, setBlockName] = React.useState('');
-    const [startRow, setStartRow] = React.useState('');
-    const [endRow, setEndRow] = React.useState('');
-    const [startCol, setStartCol] = React.useState('');
-    const [endCol, setEndCol] = React.useState('');
-    const [price, setPrice] = React.useState('');
-    const [section, setSection] = React.useState('');
     const [successMessage, setSuccessMessage] = React.useState('');
     const [errorMessage, setErrorMessage] = React.useState('');
     const [reportLoading, setReportLoading] = React.useState(false);
     const [blocks, setBlocks] = React.useState([]);
     const { showID } = useParams(); 
 
-    React.useEffect(() => {
-        // You can access showID here
-        console.log('showID:', showID);
-    },[showID]);
-
-
-    const handleCreateBlock = async (e) =>{
+    const handleDeleteBlock = async (e) =>{
         e.preventDefault();
         try {
-            // Convert price to a float
-            const numericPrice = parseFloat(price.replace('$', ''));
-
-            const response = await createBlockForShow(showID, blockName, startRow, endRow, startCol, endCol, numericPrice, section);
+            const response = await deleteBlock(showID, blockName);
             console.log(response);
 
             if (response) {
-                setSuccessMessage("Block created successfully!");
+                setSuccessMessage("Block deleted successfully!");
                 window.location.reload();
             } else {
-                setErrorMessage("Could not Create the Block");
+                setErrorMessage("Could not delete the Block");
             }
 
         } catch (error) {
             console.log(error);
-            setErrorMessage("Could not create the show");
+            setErrorMessage("Could not delete the block");
         }
     }
 
@@ -79,43 +64,32 @@ export const CreateBlock = (e) => {
     return(
         <main>
             <div>
-            <div className = "navBar">
-                <p className = "loginTrigger" onClick = {logoutHandler}> Logout</p>
-                <p className = "loginTrigger" onClick = {backToDashHandler}> Back to Dashboard</p>
-                <p className = "no-hover"> Seats4You </p>
-            </div>
+                <div className = "navBar">
+                    <p className = "loginTrigger" onClick = {logoutHandler}> Logout</p>
+                    <p className = "loginTrigger" onClick = {backToDashHandler}> Back to Dashboard</p>
+                    <p className = "no-hover"> Seats4You </p>
+                </div>
 
-            <div className="main-container">
+                <div className="main-container">
+
                 <div className="deleteForm">
-                    <form onSubmit = {handleCreateBlock}>
-                        <h1 className="blockHeaderDelete">
-                            Create Block
-                        </h1>
-                        <div className = "stack">
-                            <label>Block Name (must be unique)</label>
-                            <input type="text" placeholder="blockName" onChange={(e) => setBlockName(e.target.value)} required/>
-                            <label>Section</label>
-                            <input type="text" placeholder="Section" onChange={(e) => setSection(e.target.value)} required/>
-                            <label>Start Row</label>
-                            <input type="text" placeholder="startRowNumber" onChange={(e) => setStartRow(e.target.value)} required/>
-                            <label>End Row</label>
-                            <input type="text" placeholder="endRowNumber" onChange={(e) => setEndRow(e.target.value)} required/>
-                            <label>Start Column</label>
-                            <input type="text" placeholder="startColumnNumber" onChange={(e) => setStartCol(e.target.value)} required/>
-                            <label>End Column</label>
-                            <input type="text" placeholder="endColumnNumber" onChange={(e) => setEndCol(e.target.value)} required/>
-                            <label>Block Price</label>
-                            <input type="text" placeholder="$-" onChange={(e) => setPrice(e.target.value)} required/>
-                            <button type="submit"> Create Block </button>
-                        </div>
+                <form onSubmit = {handleDeleteBlock}>
+                    <h1 className="blockHeaderDelete">
+                        Delete Block
+                    </h1>
+                    <div className = "stack">
+                        <label>Block Name (Use menu on side)</label>
+                        <input type="text" placeholder="blockName" onChange={(e) => setBlockName(e.target.value)} required/>
+                        <button type="submit"> Delete Block </button>
+                    </div>
 
-                        {successMessage && <p className="success-message">{successMessage}</p>}
-                        {errorMessage && <p className="error-message">{errorMessage}</p>}
-                    </form>
+                    {successMessage && <p className="success-message">{successMessage}</p>}
+                    {errorMessage && <p className="error-message">{errorMessage}</p>}
+                </form>
 
-                    <Link to={`/show/deleteBlock/${showID}`}>
-                        <button> Go to Delete Block</button>
-                    </Link>
+                <Link to={`/show/createBlock/${showID}`}>
+                    <button> Go to Create Block </button>
+                </Link>
                 </div>
 
                 <div className="reportContainer">
@@ -147,12 +121,12 @@ export const CreateBlock = (e) => {
                             </div>    
                     </div>
                 </div>
+
             </div>
-            
 
             </div>
         </main>
     )
 }
 
-export default CreateBlock
+export default DeleteBlock;

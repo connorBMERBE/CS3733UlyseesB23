@@ -33,8 +33,8 @@ export const CreateShow = (e) => {
             const [hours, minutes] = time.slice(0, -2).split(':');
             const ampm = time.slice(-2);
 
-            // Adjust hours for PM
-            const adjustedHours = ampm === 'PM' ? parseInt(hours, 10) + 12 : parseInt(hours, 10);
+            // Adjust hours for PM and handle midnight case
+            const adjustedHours = (ampm === 'PM' && hours !== '12') ? parseInt(hours, 10) + 12 : (ampm === 'AM' && hours === '12') ? 0 : parseInt(hours, 10);
 
             // Create Date object with parsed values
             const jsDateTime = new Date(year, month - 1, day, adjustedHours, minutes);

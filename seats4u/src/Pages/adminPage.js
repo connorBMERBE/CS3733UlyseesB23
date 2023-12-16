@@ -1,6 +1,6 @@
 import './adminPage.css';
 import React from 'react';
-import { listVenues, listShowsForVenue, deleteShowAdmin } from '../Controller/Controller.js';
+import { parseJwt, listVenues, listShowsForVenue, deleteShowAdmin, showReport } from '../Controller/Controller.js';
 
 export const AdminPage = () => {
 
@@ -48,7 +48,6 @@ export const AdminPage = () => {
         async function fetchShows() {
             try {
                 if (selectedVenue) {
-                    console.log(selectedVenue.venueID);
                     const showsData = await listShowsForVenue(selectedVenue.venueID);
                     setShows(showsData);
                 } else {
@@ -79,12 +78,50 @@ export const AdminPage = () => {
         }
     }
 
+    // Define ShowReportComponent directly within AdminPage
+    const ShowReportComponent = ({ showID }) => {
+        const [report, setReport] = React.useState(null);
+
+        React.useEffect(() => {
+            const fetchReport = async () => {
+                try {
+                    const fetchedReports = await showReport(showID);
+                    setReport(JSON.parse(fetchedReports));
+                } catch (error) {
+                    console.error("Error fetching report:", error);
+                }
+            };
+
+            fetchReport();
+        }, [showID]);
+
+        return (
+            <div>
+                {report ? (
+                    <div>
+                        {report.totalSeats !== 0 ? (
+                            <div>
+                                <p>Proceeds: ${report.sumSoldSeatsValue}</p>
+                                <p>Seats Sold: {report.soldSeats}/{report.totalSeats}</p>
+                            </div>
+                        ) : (
+                            <p>Show is Inactive</p>
+                        )}
+                    </div>
+                ) : (
+                    <p>Loading report...</p>
+                )}
+            </div>
+        );
+    };
     return(
         <main>
             <div className = "navBar">
                 <p className = "loginTrigger" onClick = {logoutHandler}> Logout</p>
                 <p className = "no-hover"> Seats4You </p>
             </div>
+            <h1 className="welcomeMessage"> Welcome to your Administrator Dashboard, {parseJwt(localStorage.getItem('token')).userID}!</h1>
+
             <div className = "menuContainer">
                 <div className = "venueContainer">
                     <h1 className = "listVenueLabel"> List of Venues </h1>
@@ -102,13 +139,21 @@ export const AdminPage = () => {
                 </div>
 
                 <div className="venueContainer">
-                    <h1 className="listVenueLabel"> Shows </h1>
+                    <h1 className="listVenueLabel"> Delete Shows Menu </h1>
                     <div className="verticalMenu" id="venueMenu2">
                         {loadingShows ? (
                             <span className = "noShows">Loading...</span>
                         ) : shows.length > 0 ? (
                             shows.map((show, index) => (
-                                <span key={index} onClick={() => handleDeletion(show.showID)}>{show.showName}</span>
+                                <span className="blockItems" key={index} onClick={() => handleDeletion(show.showID)}>
+                                    <p>{show.showName} - {new Date(show.showDate).toLocaleDateString('en-US', 
+                                        {   year: '2-digit', 
+                                            month: '2-digit', 
+                                            day: '2-digit',
+                                            timeZone: 'UTC' })}
+                                    </p>
+                                    <ShowReportComponent showID={show.showID} />
+                                </span>
                             ))
                         ) : (
                             <span className="noShows">No Shows Present</span>
@@ -116,7 +161,7 @@ export const AdminPage = () => {
                     </div>
                 </div>
             </div>
-            
+
         </main>
     );
 }
