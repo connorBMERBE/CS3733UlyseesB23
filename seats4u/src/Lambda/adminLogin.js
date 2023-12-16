@@ -16,10 +16,12 @@ const jwtSecret = crazy.randomBytes(Math.ceil(32 / 2)).toString("hex").slice(0, 
 exports.handler = async (event) => {
     const username = event.username;
     const password = event.password;
+    console.log('Received username:', username);
+    console.log('Received password:', password);
 
     try {
         const rows = await queryDatabase('Administrator', username);
-        let role = 'venue manager';
+        let role = 'administrator';
 
         if (rows.length > 0) {
             const user = rows[0];

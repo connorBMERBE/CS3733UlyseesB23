@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const db_access = require('/opt/nodejs/db_access')
 
 const db = mysql.createPool( {
     host: db_access.config.host, 
@@ -9,7 +10,7 @@ const db = mysql.createPool( {
 
 const queryDatabase = () => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT showName, Date, Time FROM Shows WHERE isActivated = ?', [true], (error, rows) => {
+        db.query('SELECT showID ,showName, showDate, Time FROM Shows WHERE isActivated = ?', [true], (error, rows) => {
             if (error) {
                 reject(error);
             } else {
@@ -21,12 +22,21 @@ const queryDatabase = () => {
 
 exports.handler = async (event) => {
     try {
-        const shows = queryDatabase();
+        const shows = await queryDatabase();
 
-        return {
-            statusCode: 200, 
-            body: shows
+        if (shows.length > 0) {
+            return {
+                statusCode: 200, 
+                body: JSON.stringify(shows)
+            }   
+        } else {
+           return {
+                statusCode: 200, 
+                body: "No Shows Found"
+            }  
         }
+        
+        
     } catch (error) {
 
         return {

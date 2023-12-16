@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const db_access = require('/opt/nodejs/db_access')
 
+
 const db = mysql.createPool( {
     host: db_access.config.host, 
     user: db_access.config.user, 
@@ -8,9 +9,9 @@ const db = mysql.createPool( {
     database: db_access.config.database
 });
 
-const queryDatabase = (showIDTicketFK) => {
+const queryDatabase = (section, showIDTicketFK) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM Ticket WHERE showIDTicketFK = ?', [showIDTicketFK], (error, rows) => {
+        db.query('SELECT MAX(seatRow) AS numRows, MAX(seatCol) AS numCols FROM Ticket WHERE section = ? AND showIDTicketFK = ?', [section, showIDTicketFK], (error, rows) => {
             if (error) {
                 reject(error);
             } else {
@@ -22,26 +23,17 @@ const queryDatabase = (showIDTicketFK) => {
 
 exports.handler = async (event) => {
     try {
-        const showID = event.showID;
+        const section = event.section;
+        const showIDTicketFK = event.showID;
         
-        const seats = await queryDatabase(showID);
-        console.log(seats);
+        const seatData = await queryDatabase(section, showIDTicketFK);
 
-        if (seats.length > 0) {
-            return {
-                statusCode: 200, 
-                body: JSON.stringify(seats)
-            }   
-        } else {
-           return {
-                statusCode: 200, 
-                body: "No Seats Found"
-            }  
+        return {
+            statusCode: 200, 
+            body: JSON.stringify(seatData)
         }
-        
-        
     } catch (error) {
-        console.log(error);
+
         return {
             statusCode: 500, 
             body: 'Internal Server Error'

@@ -10,9 +10,22 @@ exports.handler = async (event) => {
         database: db_access.config.database
     });
 
-    const queryDeleteVenue = (showID) => {
+    const getdefaultPrice = (showID) => {
         return new Promise((resolve, reject) => {
-            db.query('DELETE FROM Shows WHERE showID=? AND isActivated=0', [showID], (error, rows) => {
+            db.query('SELECT price FROM Shows WHERE showID=? ', [showID], (error, rows) => {
+                if (error) {
+                    reject(error);
+                }
+                else {
+                    resolve(rows[0].price);
+                }
+            });
+        });
+    };
+
+    const querydeleteBlock = (blockName, price) => {
+        return new Promise((resolve, reject) => {
+            db.query('UPDATE Ticket SET blockName="Default", seatPrice=? WHERE blockName=?', [price, blockName], (error, rows) => {
                 if (error) {
                     reject(error);
                 }
@@ -22,21 +35,24 @@ exports.handler = async (event) => {
             });
         });
     };
-
+    
     try {
         const showID = event.showID;
-        const rows = await queryDeleteVenue(showID);
+        const price = await getdefaultPrice(showID);
+        const blockName=event.blockName;
+        const rows= await querydeleteBlock(blockName, price)
 
+    
         if (rows.affectedRows > 0) {
             return {
                 statusCode: 200,
-                body: "Deletion successful"
+                body: "Block deleted and set to default"
             }
         }
         else {
             return {
                 statusCode: 400,
-                body: "Show not found"
+                body: "Block not deleted"
             }
         }
     }

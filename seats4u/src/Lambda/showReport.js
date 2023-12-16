@@ -10,7 +10,7 @@ const db = mysql.createPool({
 
 const countAllSeats = (showID) => {
   return new Promise((resolve, reject) => {
-    db.query('SELECT COUNT(*) AS totalSeats FROM Tickets WHERE showIDTicketFK = ?',[showID], (error, rows) => {
+    db.query('SELECT COUNT(*) AS totalSeats FROM Ticket WHERE showIDTicketFK = ?',[showID], (error, rows) => {
       if (error) {
         reject(error);
       } else {
@@ -22,7 +22,7 @@ const countAllSeats = (showID) => {
 
 const countSoldSeats = (showID) => {
   return new Promise((resolve, reject) => {
-    db.query('SELECT COUNT(*) AS soldSeats FROM Tickets WHERE isSold = 1 AND showIDTicketFK = ?',[showID], (error, rows) => {
+    db.query('SELECT COUNT(*) AS soldSeats FROM Ticket WHERE isSold = 1 AND showIDTicketFK = ?',[showID], (error, rows) => {
       if (error) {
         reject(error);
       } else {
@@ -34,7 +34,7 @@ const countSoldSeats = (showID) => {
 
 const sumSoldSeats = (showID) => {
   return new Promise((resolve, reject) => {
-    db.query('SELECT SUM(seatPrice) AS sumSoldSeats FROM Tickets WHERE isSold = 1 AND showIDTicketFK = ?',[showID], (error, rows) => {
+    db.query('SELECT SUM(seatPrice) AS sumSoldSeats FROM Ticket WHERE isSold = 1 AND showIDTicketFK = ?',[showID], (error, rows) => {
       if (error) {
         reject(error);
       } else {

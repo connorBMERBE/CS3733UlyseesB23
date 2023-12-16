@@ -1,4 +1,6 @@
 const mysql = require('mysql');
+const db_access = require('/opt/nodejs/db_access');
+
 
 const db = mysql.createPool( {
     host: db_access.config.host, 
@@ -22,8 +24,8 @@ const queryDatabase = (showID) => {
 exports.handler = async (event) => {
     try {
         const showID = event.showID;
-        const status = queryDatabase(showID);
-
+        const status = await queryDatabase(showID);
+        
         return {
             statusCode: 200, 
             body: status

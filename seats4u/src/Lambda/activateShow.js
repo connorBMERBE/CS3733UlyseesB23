@@ -9,40 +9,42 @@ const db = mysql.createPool( {
     database: db_access.config.database
 });
 
-const queryDeleteVenue = (username) => {
+const queryActivateShow = (showID) => {
     return new Promise((resolve, reject) => {
-        db.query('DELETE FROM VenueManager WHERE username=?', [username],(error, rows) => {
+        console.log("done1");
+        db.query('UPDATE Shows SET isActivated=1 WHERE showID=?', [showID],(error, rows) => {
+            console.log("done2");
             if (error) {
                 reject(error);
             } else {
+
                 resolve(rows);
-                
             }
-        })
-    })
-}
+        });
+    });
+};
 
 exports.handler = async (event) => {
     try {
-        const username = event.username;
-        const rows = await queryDeleteVenue(username);
+        const showID = event.showID;
+        const response = await queryActivateShow(showID);
         
-        if (rows.affectedRows > 0) {
+        console.log(response);
+        if (response.affectedRows === 1) {
             return {
                 statusCode: 200, 
-                body: "Deletion successful"
-            }   
+                body: "Activation Successful"
+            };
         } else {
-            return{
-                statusCode: 400, 
-                body: "Venue Manager not found"
+            return {
+                statusCode: 400,
+                body: 'Show not found or too many shows found'
             }
         }
     } catch (error) {
-        console.log(error)
         return {
             statusCode: 500, 
             body: 'Internal Server Error'
-        }
+        };
     }
-}
+};

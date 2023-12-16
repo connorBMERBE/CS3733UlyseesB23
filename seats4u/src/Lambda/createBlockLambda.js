@@ -23,58 +23,19 @@ const another = (showID, i, j, blockName, price, section) => {
     });
     
 };
-
-const queryDatabase = (showName) => {
-    
-    return new Promise((resolve, reject) => {
-        console.log("start");
-        db.query(`SELECT showID FROM Shows WHERE showName = ?`, [showName], (error, rows) => {
-            if (error) {
-                console.log("error");
-                reject(error);
-            } else {
-                return resolve(rows[0].showID);
-                // console.log("success");
-                // console.log(rows[0].showID);
-                // if(rows.length > 0){
-                //     const showID = rows[0].showID;
-                    
-                //     let i ;
-                //     let j;
-                //     for (i = startRow; i <= endRow; i++){
-                //         for (j = startCol; i <= endCol; i++){
-                //             db.query('UPDATE Ticket SET seatPrice=? AND blockName=? WHERE (showIDTicketFK=?) AND (seatRow=?) AND (seatCol=?) AND (section=?)', [price, blockName, showID, i, j, section], (error, rows) => {
-                //                 if (error){
-                //                     return reject(error);
-                //                 } else{
-                //                     return resolve(rows);
-                                
-                //                 }
-                //             });
-                //         }
-                //     }
-                // }
-            }
-        });
-                    
-    });
-};
-
-
-                                   
   
   exports.handler = async (event) => {
     const blockName = event.blockName;
-    const showName = event.showName;
+
     const startRow = event.startRow;
     const endRow = event.endRow;
     const startCol = event.startCol;
     const endCol = event.endCol;
     const price = event.price;
     const section = event.section;
+    const showID = event.showID;
   
     try {
-        const showID = await queryDatabase(showName) ;
         let i ;
         let j ;
         for (i = startRow; i <= endRow; i++){

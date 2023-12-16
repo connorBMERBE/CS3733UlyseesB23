@@ -12,24 +12,32 @@ exports.handler = async (event) => {
     try {
         // Assuming the input event contains an array of seats
         const seats = event.seats;
+        const showID = event.showID;
         const alreadySold = [];
     
         // Iterate through the seats and check if they are sold
         for (const seat of seats) {
-            const isSold = await checkIfSeatIsSold(seat);
+            const isSold = await checkIfSeatIsSold(showID, seat);
             
             // If the seat is not sold, mark it as sold
             if (isSold) {
                 alreadySold.push(seat);
             } else {
-                await markSeatAsSold(seat);
+                await markSeatAsSold(showID, seat);
             }
         }
-    
-        return { 
-            statusCode: 200, 
-            body: alreadySold
-        };
+        
+        if (alreadySold.length > 0) {
+            return { 
+                statusCode: 201, 
+                body: alreadySold
+            };
+        } else {
+            return { 
+                statusCode: 200, 
+                body: "Congrats on your Purchase"
+            };
+        }
 
     } catch (error) {
         console.error('Error:', error);
@@ -41,10 +49,10 @@ exports.handler = async (event) => {
 };
 
 // Function to check if a seat is sold
-const checkIfSeatIsSold = (seat) => {
+const checkIfSeatIsSold = (showID, seat) => {
     return new Promise((resolve, reject) => {
       db.query(
-        'SELECT isSold FROM your_table WHERE section = ? AND seatRow = ? AND seatCol = ?', [seat.section, seat.row, seat.column],
+        'SELECT isSold FROM Ticket WHERE showIDTicketFK = ? AND section = ? AND seatRow = ? AND seatCol = ?', [showID, seat.section, seat.row, seat.column],
         (error, results) => {
           if (error) {
             reject(error);
@@ -58,11 +66,10 @@ const checkIfSeatIsSold = (seat) => {
 };
   
 // Function to mark a seat as sold
-const markSeatAsSold = (seat) => {
+const markSeatAsSold = (showID, seat) => {
     return new Promise((resolve, reject) => {
         db.query(
-        'UPDATE your_table SET isSold = 1 WHERE section = ? AND seatRow = ? AND seatCol = ?',
-        [seat.section, seat.row, seat.column],
+        'UPDATE Ticket SET isSold = 1 WHERE showIDTicketFK = ? AND section = ? AND seatRow = ? AND seatCol = ?', [showID, seat.section, seat.row, seat.column],
         (error) => {
             if (error) {
             reject(error);

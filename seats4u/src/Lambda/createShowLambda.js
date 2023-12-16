@@ -8,7 +8,7 @@ const db = mysql.createPool( {
     database: db_access.config.database
 });
 
-const queryDatabase = (username, venueName, showName, date, time) => {
+const queryDatabase = (username, showName, date, time, price) => {
     return new Promise((resolve, reject) => {
         db.query(`SELECT vmID FROM VenueManager WHERE username = ?`, [username], (error, rows) => {
             if (error) {
@@ -16,14 +16,14 @@ const queryDatabase = (username, venueName, showName, date, time) => {
             } else {
                 
                 if(rows.length > 0){
-                    const vmIDShowsFK = rows[0].vmIDFK;
+                    const vmIDShowsFK = rows[0].vmID;
                     db.query (`SELECT venueID FROM Venue WHERE vmIDvenueFK = ?`, [vmIDShowsFK], (error, rows) => {
                         if (error){
                             reject(error)
                         } else{
                             const venueIDShowsFK = rows[0].venueID
 
-                            db.query('INSERT INTO Show (showName, date, time, vmIDShowsFK, venueIDShowsFK) VALUES (?, ?, ?, ?, ?)', [showName, date, time, vmIDShowsFK, venueIDShowsFK], (insertError, result) => {
+                            db.query('INSERT INTO Shows (showName, showDate, time, vmIDShowsFK, venueIDShowsFK, price) VALUES (?, ?, ?, ?, ?, ?)', [showName, date, time, vmIDShowsFK, venueIDShowsFK, price], (insertError, result) => {
                                 if (insertError) {
                                     reject(insertError);
                                 } else {
@@ -33,6 +33,7 @@ const queryDatabase = (username, venueName, showName, date, time) => {
                         }
                     }) 
                 } else {
+                    console.log(error);
                     reject(JSON.stringify({
                     statusCode: 500,
                     body: 'Venue Manager not found'
@@ -44,20 +45,21 @@ const queryDatabase = (username, venueName, showName, date, time) => {
   
   exports.handler = async (event) => {
     const username = event.username;
-    const venueName = event.venueName;
     const showName = event.showName;
     const date = event.date;
     const time = event.time;
+    const price = event.price;
   
     try {
-        await queryDatabase(username, venueName, showName, date, time) 
-        
+        const response = await queryDatabase(username, showName, date, time, price) 
+        console.log(response);
         return {
             statusCode: 200, 
-            body: 'Successfully Created a Show'
+            body: response.insertId
         };
     }
     catch (error) {
+        console.log(error);
         return {
             statusCode: 500, 
             body: 'Internal Server Error'

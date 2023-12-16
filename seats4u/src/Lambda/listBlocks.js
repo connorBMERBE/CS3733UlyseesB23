@@ -10,41 +10,44 @@ const db = mysql.createPool( {
 
 const queryDatabase = (showID) => {
     return new Promise((resolve, reject) => {
-        db.query(`SELECT blockName, COUNT(*) AS totalSeats FROM Seats4U_Prod.Ticket WHERE showIDTicketFK = ? GROUP BY blockName;`, [showID], (error, rows) => {
-            if (error) {
-                reject(error);
-            } else {
-                console.log(rows);
-                resolve(rows);
-            }
-        });
+        const results = {};
 
-        db.query(`SELECT blockName, COUNT(*) AS seatsSold, COUNT(*) * AVG(seatPrice) AS proceedsPerBlock, AVG(seatPrice) AS pricePerSeat FROM Seats4U_Prod.Ticket WHERE showIDTicketFK = ? AND isSold = 1 GROUP BY blockName;`, [showID], (error, rows) => {
+        // Query for totalSeats, seatsSold, proceedsPerBlock, totalProceeds, and pricePerSeat
+        db.query(`
+            SELECT 
+                blockName,
+                section,
+                MIN(seatRow) AS startRow,
+                MAX(seatRow) AS endRow,
+                MIN(seatCol) AS startCol,
+                MAX(seatCol) AS endCol,
+                COUNT(*) AS totalSeats,
+                SUM(CASE WHEN isSold = 1 THEN 1 ELSE 0 END) AS seatsSold,
+                COUNT(*) * AVG(CASE WHEN isSold = 1 THEN seatPrice ELSE 0 END) AS proceedsPerBlock,
+                COUNT(*) * AVG(CASE WHEN isSold = 1 THEN seatPrice ELSE 0 END) AS totalProceeds,
+                AVG(seatPrice) AS seatPrice
+            FROM Seats4U_Prod.Ticket 
+            WHERE showIDTicketFK = ?
+            GROUP BY blockName, section;
+                    `, [showID], (error, rows) => {
             if (error) {
                 reject(error);
             } else {
-                console.log(rows);
-                resolve(rows);
-            }
-        });
-
-        db.query(`SELECT blockName, COUNT(*) AS totalSeats, COUNT(*) * AVG(seatPrice) AS totalProceeds, AVG(seatPrice) AS pricePerSeat FROM Seats4U_Prod.Ticket WHERE showIDTicketFK = ? GROUP BY blockName;`, [showID], (error, rows) => {
-            if (error) {
-                reject(error);
-            } else {
-                console.log(rows);
-                resolve(rows);
+                results['blocks'] = rows;
+                resolve(results);
             }
         });
     });
-}
+};
+
+
 
 exports.handler = async (event) => {
     try {
         const showID = event.showID;
         const blocks = await queryDatabase(showID);
 
-        if (blocks.length > 0) {
+        if (Object.keys(blocks).length > 0) {
             return {
                 statusCode: 200, 
                 body: JSON.stringify(blocks)

@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const db_access = require('/opt/nodejs/db_access');
 
 const db = mysql.createPool( {
     host: db_access.config.host, 
@@ -9,7 +10,7 @@ const db = mysql.createPool( {
 
 const queryDatabase = () => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT venueName FROM VENUE', (error, rows) => {
+        db.query('SELECT venueID, venueName FROM Venue', (error, rows) => {
             if (error) {
                 reject(error);
             } else {
@@ -21,14 +22,14 @@ const queryDatabase = () => {
 
 exports.handler = async (event) => {
     try {
-        const venues = queryDatabase();
+        const venues = await queryDatabase();
 
         return {
             statusCode: 200, 
-            body: venues
+            body: JSON.stringify(venues)
         }
     } catch (error) {
-
+        console.log(error);
         return {
             statusCode: 500, 
             body: 'Internal Server Error'
